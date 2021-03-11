@@ -14,6 +14,9 @@ Denk hierbij aan een soort tijdlijn van Facebook of Twitter.
   - [ ] CRUD operaties
   - [ ] Connectie met Azure Cosmos Database
 
+### Presentatie
+Martijn wou graag een presentatie over Azure Cosmos Database etcetera...
+
 ### Optionele technieken
 Wanneer er nog tijd beschikbaar is, willen wij ons gaan verdiepen in het volgende.
 - [ ] Automatisch deployen naar Azure via DevOps (Continuous Integration).

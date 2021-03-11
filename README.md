@@ -9,7 +9,7 @@ Denk hierbij aan een soort tijdlijn van Facebook of Twitter.
 
 ### Technieken:
 - [ ] Blazor WebAssembly
-- [ ] ASP.NET Core
+- [ ] ASP.NET Core met SignalR (voor realtime data)
 - [ ] Eigen .NET Core API
   - [ ] CRUD operaties
   - [ ] Connectie met Azure Cosmos Database

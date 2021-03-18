@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaApplication", "BlazorWebApp\SocialMediaApplication.csproj", "{57EC773D-B802-4876-B510-682D126079AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDB", "CosmosDbSQLAPI\CosmosDB.csproj", "{04EB6938-0554-4009-8464-171528A81879}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{96753907-BD37-43B6-96E0-3F5EEA862893}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{57EC773D-B802-4876-B510-682D126079AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57EC773D-B802-4876-B510-682D126079AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57EC773D-B802-4876-B510-682D126079AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04EB6938-0554-4009-8464-171528A81879}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04EB6938-0554-4009-8464-171528A81879}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04EB6938-0554-4009-8464-171528A81879}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04EB6938-0554-4009-8464-171528A81879}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96753907-BD37-43B6-96E0-3F5EEA862893}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96753907-BD37-43B6-96E0-3F5EEA862893}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96753907-BD37-43B6-96E0-3F5EEA862893}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96753907-BD37-43B6-96E0-3F5EEA862893}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

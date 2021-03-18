@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include=".github" />
     <None Include="wwwroot\postcss.config.js" />
   </ItemGroup>
 

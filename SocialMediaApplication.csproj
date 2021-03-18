@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\postcss.config.js" />
+  </ItemGroup>
+
 </Project>

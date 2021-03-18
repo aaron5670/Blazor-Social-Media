@@ -1,7 +1,9 @@
-﻿using CosmosDbSQLAPI;
+﻿using System;
+using CosmosDbSQLAPI;
 using Entities;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace SocialMediaApplication.Data
@@ -66,6 +68,7 @@ namespace SocialMediaApplication.Data
             using (var userRepository = new UserRepository(new CommunityDbContext()))
             {
                 userRepository.Include(nameof(User.Posts));
+                Debug.WriteLine(userRepository.GetAll());
                 return userRepository.GetAll();
             }
         }

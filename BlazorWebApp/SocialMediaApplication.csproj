@@ -14,4 +14,8 @@
     <None Include="wwwroot\postcss.config.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CosmosDbSQLAPI\CosmosDB.csproj" />
+  </ItemGroup>
+
 </Project>

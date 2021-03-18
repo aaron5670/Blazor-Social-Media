@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include=".github\workflow\deploy-blazor-to-azure.yml" />
+    <Folder Include=".github" />
   </ItemGroup>
 
 </Project>

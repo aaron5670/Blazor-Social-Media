@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include=".github\workflow\deploy-blazor-to-azure.yml" />
+  </ItemGroup>
+
 </Project>

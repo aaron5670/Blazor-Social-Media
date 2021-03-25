@@ -1,6 +1,6 @@
 ﻿@using System.Security.Claims
 @using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor _httpContextAccessor
+
 @if (User.Identity?.Name != null)
 {
     <img src="@Avatar" alt=""/>
@@ -32,7 +32,8 @@ else
 
         try
         {
-    // Set the user to determine if they are logged in
+            // Set the user to determine if they are logged in
+            HttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
             User = _httpContextAccessor.HttpContext?.User;
 
             var givenName = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.GivenName);

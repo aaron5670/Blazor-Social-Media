@@ -1,7 +1,9 @@
 ﻿@page "/socialfeed"
 @inject NavigationManager navigationManager;
 @using Microsoft.AspNetCore.SignalR.Client;
-@using System.Diagnostics
+@using SocialMediaApplication.Data
+@using Entities
+@inject UserService UserService
 
 <div class="flex justify-center w-100 h-screen px-4 text-gray-700">
     <div class="flex w-full">
@@ -132,12 +134,14 @@
 
 @code {
     private bool _isChatting = false;
-    private string _username;
+    private string _username = string.Empty;
     private string _message;
     private string _newMessage;
     private string _hubUrl;
     private HubConnection _hubConnection;
     private List<Message> _messages = new List<Message>();
+    ICollection<User> users;
+    string ErrorText { get; set; } = string.Empty;
 
     public string removeNotice(string body)
     {
@@ -156,23 +160,21 @@
 
         try
         {
+            await LoginUser();
             _isChatting = true;
+            
             await Task.Delay(1);
-
+            
             _messages.Clear();
-
+            
             string baseUrl = navigationManager.BaseUri;
-
+            
             _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
-
-            _hubConnection = new HubConnectionBuilder()
-                .WithUrl(_hubUrl)
-                .Build();
-
+            _hubConnection = new HubConnectionBuilder().WithUrl(_hubUrl).Build();
             _hubConnection.On<string, string>("Broadcast", BroadcastMessage);
-
+            
             await _hubConnection.StartAsync();
-
+            
             await SendAsync($"[Notice] logged in");
         }
         catch (Exception e)
@@ -230,5 +232,26 @@
 
         public string CSS => Mine ? "sent" : "received";
     }
+    
+    public async Task LoginUser()
+    {
+        ErrorText = string.Empty;
+        var user = users.SingleOrDefault(x => x.Name == _username);
+        if (user == null)
+        {
+            ErrorText = "User does not exist!";
+            return;
+        }
+        Console.WriteLine(_username);
+        await UserService.LoginUser(_username);
 
+        // Reload users.  
+        users = UserService.GetUsers();
+    }
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(() => users = UserService.GetUsers());
+    }
 }

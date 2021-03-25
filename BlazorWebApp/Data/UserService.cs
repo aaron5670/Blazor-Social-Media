@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SocialMediaApplication.Data
 {
@@ -40,7 +41,32 @@ namespace SocialMediaApplication.Data
             }
         }
 
-        public void AddPost(string username)
+        public async Task  LoginUser(string username)
+        {
+            using (var userRepository = new UserRepository(new CommunityDbContext()))
+            {
+                userRepository.GenerateDatabase();
+
+                userRepository
+                    .Add(
+                        new User
+                        {
+                            Name = username,
+                            Posts = new Collection<Post>
+                            {
+                                new Post
+                                {
+                                    Title = "www.bassam.ml",
+                                    Content = "My page"
+                                }
+                            }
+                        }
+                    );
+                userRepository.Commit();
+            }
+        }
+
+        public async Task AddPost(string username)
         {
             // Todo async and  Error code!  
             using (var userRepository = new UserRepository(new CommunityDbContext()))

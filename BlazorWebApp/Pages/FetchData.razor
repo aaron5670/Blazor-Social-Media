@@ -50,20 +50,20 @@ else
 
     ICollection<User> users;
 
-    void AddPost()
+    public async Task AddPost()
     {
         ErrorText = string.Empty;
         var user = users.SingleOrDefault(x => x.Name == Username);
         if (user == null)
         {
-            // error user, not exits!   
+    // error user, not exits!   
             ErrorText = "User does not exist!";
             return;
         }
 
-        UserService.AddPost(Username);
+        await UserService.AddPost(Username);
 
-        // Reload users.  
+    // Reload users.  
         users = UserService.GetUsers();
     }
 
@@ -73,14 +73,14 @@ else
         var user = users.SingleOrDefault(x => x.Name == Username);
         if (user == null)
         {
-            // error user, not exits!   
+    // error user, not exits!   
             ErrorText = "User does not exist!";
             return;
         }
 
         UserService.DeleteUser(Username);
 
-        // Reload users.  
+    // Reload users.  
         users.Remove(user);
     }
 
@@ -88,4 +88,5 @@ else
     {
         await Task.Run(() => users = UserService.GetUsers());
     }
+
 }

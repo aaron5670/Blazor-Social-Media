@@ -1,9 +1,10 @@
 ﻿@using System.Security.Claims
 @using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor _httpContextAccessor
+@using System.Diagnostics
+@inject IHttpContextAccessor HttpContextAccessor
 @inject HttpClient Http
 
-@if (User.Identity.Name != null)
+@if (User?.Identity?.Name != null)
 {
     <img src="@Avatar"/>
     <b>You are logged in as: @GivenName @Surname</b>
@@ -30,25 +31,54 @@ else
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
+        base.OnInitializedAsync();
 
         try
         {
+            if (HttpContextAccessor.HttpContext == null)
+            {
+                User = null;
+                return;
+            }
+            
             // Set the user to determine if they are logged in
-            if (_httpContextAccessor.HttpContext == null) return;
-            User = _httpContextAccessor.HttpContext.User;
-            if (User == null) return;
-
-            var givenName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName);
-
-            if (User.Identity != null) GivenName = givenName != null ? givenName.Value : User.Identity.Name;
-
-            var surname = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname);
-            Surname = surname != null ? surname.Value : "";
-
-            var avatar = _httpContextAccessor.HttpContext.User.FindFirst("urn:google:image");
-
-            Avatar = avatar != null ? avatar.Value : "";
+            User = HttpContextAccessor.HttpContext.User;
+            
+            // Try to get the GivenName
+            var givenName = HttpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName);
+            
+            if (givenName != null)
+            {
+                GivenName = givenName.Value;
+            }
+            else
+            {
+                GivenName = User.Identity?.Name;
+            }
+            
+            // Try to get the Surname
+            var surname = HttpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname);
+            
+            if (surname != null)
+            {
+                Surname = surname.Value;
+            }
+            else
+            {
+                Surname = "";
+            }
+            
+            // Try to get Avatar
+            var avatar = HttpContextAccessor.HttpContext.User.FindFirst("urn:google:image");
+            
+            if (avatar != null)
+            {
+                Avatar = avatar.Value;
+            }
+            else
+            {
+                Avatar = "";
+            }
         }
         catch (NullReferenceException e)
         {

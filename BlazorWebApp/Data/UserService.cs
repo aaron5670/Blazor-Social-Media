@@ -45,8 +45,6 @@ namespace SocialMediaApplication.Data
         {
             using (var userRepository = new UserRepository(new CommunityDbContext()))
             {
-                userRepository.GenerateDatabase();
-
                 userRepository
                     .Add(
                         new User
@@ -66,13 +64,12 @@ namespace SocialMediaApplication.Data
             }
         }
 
-        public async Task AddPost(string username)
+        public async Task AddPost(string username, string message)
         {
-            // Todo async and  Error code!  
             using (var userRepository = new UserRepository(new CommunityDbContext()))
             {
                 var user = userRepository.Find(u => u.Name == username).Single();
-                user.Posts.Add(new Post() {Content = "CSharp", Title = "I love you CosmosDb!"});
+                user.Posts.Add(new Post() {Content = message, Title = "I love you CosmosDb!"});
                 userRepository.Commit();
             }
         }

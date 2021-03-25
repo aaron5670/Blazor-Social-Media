@@ -61,7 +61,7 @@ else
             return;
         }
 
-        await UserService.AddPost(Username);
+        await UserService.AddPost(Username, "test");
 
     // Reload users.  
         users = UserService.GetUsers();

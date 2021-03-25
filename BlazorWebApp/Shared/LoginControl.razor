@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor _httpContextAccessor
 @inject HttpClient Http
-@if (User?.Identity?.Name != null)
+@if (User.Identity?.Name != null)
 {
     <img src="@Avatar" />
     <b>You are logged in as: @GivenName @Surname</b>
@@ -28,18 +28,21 @@ else
         try
         {
             // Set the user to determine if they are logged in
-            User = _httpContextAccessor.HttpContext.User;
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                User = _httpContextAccessor.HttpContext.User;
 
-            var givenName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName);
+                var givenName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName);
 
-            GivenName = givenName != null ? givenName.Value : User.Identity.Name;
+                GivenName = givenName != null ? givenName.Value : User.Identity.Name;
 
-            var surname = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname);
-            Surname = surname != null ? surname.Value : "";
+                var surname = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname);
+                Surname = surname != null ? surname.Value : "";
 
-            var avatar = _httpContextAccessor.HttpContext.User.FindFirst("urn:google:image");
+                var avatar = _httpContextAccessor.HttpContext.User.FindFirst("urn:google:image");
 
-            Avatar = avatar != null ? avatar.Value : "";
+                Avatar = avatar != null ? avatar.Value : "";
+            }
         }
         catch (NullReferenceException e)
         {

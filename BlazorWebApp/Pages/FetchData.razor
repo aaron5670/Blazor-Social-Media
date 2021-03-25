@@ -1,46 +1,91 @@
-﻿@page "/fetchdata"
-
+﻿@page "/fetchdata"  
 @using SocialMediaApplication.Data
-@inject WeatherForecastService ForecastService
+@using Entities
+@inject UserService UserService
 
-<h1>Weather forecast</h1>
+<h1>Community members</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
+<p>This component demonstrates fetching data from Entity Framework Core and Cosmos DB.</p>
 
-@if (forecasts == null)
+@if (users == null)
 {
-    <p><em>Loading...</em></p>
+    <p>
+        <em>Loading... From Cosmos Emulator!</em>
+    </p>
 }
 else
 {
+    <label style="color: red;">@ErrorText</label>
+    <br/>
+    <input @bind-value="@Username" @bind-value:event="oninput" placeholder="Enter User Name"/>
+    <button class="btn btn-primary" @onclick="@AddPost">Add Post</button>
+    <button class="btn btn-primary" @onclick=@DeleteUser>Delete User</button>
+
     <table class="table">
         <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
+        <tr>
+            <th>Name</th>
+            <th>Id</th>
+            <th>Post Count</th>
+
+        </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
+        @foreach (var user in users)
+        {
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.UserId</td>
+                <td>@user.Posts.Count()</td>
+
+            </tr>
+        }
         </tbody>
     </table>
 }
 
 @code {
-    private WeatherForecast[] forecasts;
+    string Username { get; set; } = string.Empty;
+    string ErrorText { get; set; } = string.Empty;
+
+    ICollection<User> users;
+
+    void AddPost()
+    {
+        ErrorText = string.Empty;
+        var user = users.SingleOrDefault(x => x.Name == Username);
+        if (user == null)
+        {
+            // error user, not exits!   
+            ErrorText = "User does not exist!";
+            return;
+        }
+
+        UserService.AddPost(Username);
+
+        // Reload users.  
+        users = UserService.GetUsers();
+    }
+
+    void DeleteUser()
+    {
+        ErrorText = string.Empty;
+        var user = users.SingleOrDefault(x => x.Name == Username);
+        if (user == null)
+        {
+            // error user, not exits!   
+            ErrorText = "User does not exist!";
+            return;
+        }
+
+        UserService.DeleteUser(Username);
+
+        // Reload users.  
+        users.Remove(user);
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        await Task.Run(() => users = UserService.GetUsers());
     }
 }

@@ -2,13 +2,11 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor _httpContextAccessor
 @inject HttpClient Http
+
 @{
-    ClaimsIdentity? first = User.Identities.FirstOrDefault();
+    var first = User.Identities.FirstOrDefault();
 }
-@{
-    System.Diagnostics.Debug.Assert(first != null, nameof(first) + " != null");
-}
-@if (first.IsAuthenticated)
+@if (first != null && first.IsAuthenticated)
 {
     <img src="@Avatar" alt=""/>
     <b>You are logged in as: @GivenName @Surname</b>

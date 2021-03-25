@@ -24,47 +24,30 @@ else
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        
         try
         {
             // Set the user to determine if they are logged in
             User = _httpContextAccessor.HttpContext.User;
-            // Try to get the GivenName
-            var givenName =
-                _httpContextAccessor.HttpContext.User
-                .FindFirst(ClaimTypes.GivenName);
-            if (givenName != null)
-            {
-                GivenName = givenName.Value;
-            }
-            else
-            {
-                GivenName = User.Identity.Name;
-            }
-            // Try to get the Surname
-            var surname =
-                _httpContextAccessor.HttpContext.User
-                .FindFirst(ClaimTypes.Surname);
-            if (surname != null)
-            {
-                Surname = surname.Value;
-            }
-            else
-            {
-                Surname = "";
-            }
-            // Try to get Avatar
-            var avatar =
-            _httpContextAccessor.HttpContext.User
-            .FindFirst("urn:google:image");
-            if (avatar != null)
-            {
-                Avatar = avatar.Value;
-            }
-            else
-            {
-                Avatar = "";
-            }
+
+            var givenName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName);
+
+            GivenName = givenName != null ? givenName.Value : User.Identity.Name;
+
+            var surname = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname);
+            Surname = surname != null ? surname.Value : "";
+
+            var avatar = _httpContextAccessor.HttpContext.User.FindFirst("urn:google:image");
+
+            Avatar = avatar != null ? avatar.Value : "";
         }
-        catch { }
+        catch (NullReferenceException e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
     }
 }

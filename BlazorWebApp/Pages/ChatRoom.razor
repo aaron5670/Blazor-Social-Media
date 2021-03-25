@@ -12,7 +12,11 @@
     </p>
 
     <input type="text" maxlength="32" @bind="@_username" />
-    <button type="button" @onclick="@Chat"><span class="oi oi-chat" aria-hidden="true"></span> Chat!</button>
+    <button type="button" @onclick="@Chat">
+        <span class="oi oi-chat" aria-hidden="true">
+            
+        </span> Chat!
+    </button>
 
     // Error messages
     @if (_message != null)

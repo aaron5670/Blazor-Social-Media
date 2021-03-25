@@ -7,7 +7,9 @@ using SocialMediaApplication.Data;
 using System.Net.Http;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace SocialMediaApplication
 {
@@ -28,8 +30,8 @@ namespace SocialMediaApplication
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<UserService>();
             
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            
             services.AddAuthentication().AddGoogle(options =>
             {
                 options.ClientId = Configuration["Google:ClientId"];

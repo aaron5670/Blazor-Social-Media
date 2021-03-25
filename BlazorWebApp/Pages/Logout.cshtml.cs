@@ -17,9 +17,7 @@ namespace SocialMediaApplication.Pages
             // Clear the existing external cookie
             try
             {
-                await HttpContext
-                    .SignOutAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             }
             catch (Exception ex)
             {

@@ -3,10 +3,7 @@
 @inject IHttpContextAccessor _httpContextAccessor
 @inject HttpClient Http
 
-@{
-    System.Diagnostics.Debug.Assert(User.Identity != null, "User.Identity != null");
-}
-@if (User.Identity.IsAuthenticated)
+@if (User.Identity != null && User.Identity.IsAuthenticated )
 { 
      <img src="@Avatar"/> 
     <b>You are logged in as: @GivenName @Surname</b>

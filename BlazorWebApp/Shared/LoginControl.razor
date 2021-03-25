@@ -5,7 +5,7 @@
 
 
 
-@if (@Avatar != null)
+@if (User.Identity?.Name != null)
 {
     <img src="@Avatar" alt=""/>
     <b>You are logged in as: @GivenName @Surname</b>
@@ -48,7 +48,7 @@ else
 
             var avatar = _httpContextAccessor.HttpContext?.User.FindFirst("urn:google:image");
 
-            Avatar = avatar != null ? avatar.Value : null;
+            Avatar = avatar != null ? avatar.Value : "";
         }
         catch (NullReferenceException e)
         {

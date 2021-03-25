@@ -34,7 +34,7 @@ else
 
                 var givenName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName);
 
-                GivenName = givenName != null ? givenName.Value : User.Identity.Name;
+                if (User.Identity != null) GivenName = givenName != null ? givenName.Value : User.Identity.Name;
 
                 var surname = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname);
                 Surname = surname != null ? surname.Value : "";

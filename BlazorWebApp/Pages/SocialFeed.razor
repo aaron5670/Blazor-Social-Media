@@ -236,13 +236,9 @@
     public async Task LoginUser()
     {
         ErrorText = string.Empty;
-        var user = users.SingleOrDefault(x => x.Name == _username);
-        if (user == null)
-        {
-            ErrorText = "User does not exist!";
-            return;
-        }
+
         Console.WriteLine(_username);
+
         await UserService.LoginUser(_username);
 
         // Reload users.  

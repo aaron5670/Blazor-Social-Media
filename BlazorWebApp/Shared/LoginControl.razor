@@ -3,10 +3,9 @@
 @inject IHttpContextAccessor _httpContextAccessor
 @inject HttpClient Http
 
-@{
-    var first = User.Identities.FirstOrDefault();
-}
-@if (first != null && first.IsAuthenticated)
+
+
+@if (@Avatar != null)
 {
     <img src="@Avatar" alt=""/>
     <b>You are logged in as: @GivenName @Surname</b>
@@ -49,7 +48,7 @@ else
 
             var avatar = _httpContextAccessor.HttpContext?.User.FindFirst("urn:google:image");
 
-            Avatar = avatar != null ? avatar.Value : "";
+            Avatar = avatar != null ? avatar.Value : null;
         }
         catch (NullReferenceException e)
         {

@@ -29,8 +29,16 @@ namespace SocialMediaApplication
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<UserService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            
+            // From: https://github.com/aspnet/Blazor/issues/1554
+            // Adds HttpContextAccessor
+            // Used to determine if a user is logged in
+            // and what their username is
+            services.AddHttpContextAccessor();
+            services.AddScoped<HttpContextAccessor>();
             
             services.AddAuthentication().AddGoogle(options =>
             {
@@ -40,12 +48,7 @@ namespace SocialMediaApplication
                 options.ClaimActions.MapJsonKey("urn:google:image", "picture");
             });
             
-            // From: https://github.com/aspnet/Blazor/issues/1554
-            // Adds HttpContextAccessor
-            // Used to determine if a user is logged in
-            // and what their username is
-            services.AddHttpContextAccessor();
-            services.AddScoped<HttpContextAccessor>();
+
             
             // Pass settings to other components
             services.AddSingleton<IConfiguration>(Configuration);

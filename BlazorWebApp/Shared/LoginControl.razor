@@ -3,24 +3,24 @@
 @inject IHttpContextAccessor _httpContextAccessor
 @inject HttpClient Http
 
-@if (User.Identity != null && User.Identity.IsAuthenticated )
-{ 
-     <img src="@Avatar"/> 
+@if (User.Identity.Name != null)
+{
+    <img src="@Avatar"/>
     <b>You are logged in as: @GivenName @Surname</b>
     <a class="ml-md-auto btn btn-primary"
        href="/Logout"
        target="_top">
         Logout
     </a>
- } 
- else 
- { 
+}
+else
+{
     <a class="ml-md-auto btn btn-primary"
        href="/Login"
        target="_top">
         Login
     </a>
- } 
+}
 
 @code {
     private ClaimsPrincipal User;
@@ -34,22 +34,21 @@
 
         try
         {
-    // Set the user to determine if they are logged in
-            if (_httpContextAccessor.HttpContext != null)
-            {
-                User = _httpContextAccessor.HttpContext.User;
+            // Set the user to determine if they are logged in
+            if (_httpContextAccessor.HttpContext == null) return;
+            User = _httpContextAccessor.HttpContext.User;
+            if (User == null) return;
 
-                var givenName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName);
+            var givenName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName);
 
-                if (User.Identity != null) GivenName = givenName != null ? givenName.Value : User.Identity.Name;
+            if (User.Identity != null) GivenName = givenName != null ? givenName.Value : User.Identity.Name;
 
-                var surname = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname);
-                Surname = surname != null ? surname.Value : "";
+            var surname = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname);
+            Surname = surname != null ? surname.Value : "";
 
-                var avatar = _httpContextAccessor.HttpContext.User.FindFirst("urn:google:image");
+            var avatar = _httpContextAccessor.HttpContext.User.FindFirst("urn:google:image");
 
-                Avatar = avatar != null ? avatar.Value : "";
-            }
+            Avatar = avatar != null ? avatar.Value : "";
         }
         catch (NullReferenceException e)
         {

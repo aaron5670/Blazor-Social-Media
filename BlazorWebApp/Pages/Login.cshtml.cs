@@ -25,8 +25,7 @@ namespace SocialMediaApplication.Pages
             return new ChallengeResult(provider, authenticationProperties);
         }
 
-        public async Task<IActionResult> OnGetCallbackAsync(
-            string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
             // Get the information about the user from the external login provider
             var GoogleUser = this.User.Identities.FirstOrDefault();

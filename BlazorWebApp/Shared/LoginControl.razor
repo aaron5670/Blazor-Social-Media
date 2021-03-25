@@ -39,17 +39,17 @@ else
         
         try
         {
-    // Set the user to determine if they are logged in
-            User = _httpContextAccessor.HttpContext.User;
+            // Set the user to determine if they are logged in
+            User = _httpContextAccessor.HttpContext?.User;
 
-            var givenName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName);
+            var givenName = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.GivenName);
 
-            GivenName = givenName != null ? givenName.Value : User.Identity.Name;
+            GivenName = givenName != null ? givenName.Value : User?.Identity?.Name;
 
-            var surname = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname);
+            var surname = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Surname);
             Surname = surname != null ? surname.Value : "";
 
-            var avatar = _httpContextAccessor.HttpContext.User.FindFirst("urn:google:image");
+            var avatar = _httpContextAccessor.HttpContext?.User.FindFirst("urn:google:image");
 
             Avatar = avatar != null ? avatar.Value : "";
         }

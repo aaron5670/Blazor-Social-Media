@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace SocialMediaApplication
 {
@@ -32,7 +33,8 @@ namespace SocialMediaApplication
             services.AddSingleton<UserService>();
             
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             
             services.AddAuthentication().AddGoogle(options =>

@@ -3,24 +3,27 @@
 @inject IHttpContextAccessor _httpContextAccessor
 @inject HttpClient Http
 
-@if (User.Identity != null && User.Identity.Name != null)
-{
-    <img src="@Avatar"/>
+@{
+    System.Diagnostics.Debug.Assert(User.Identity != null, "User.Identity != null");
+}
+@if (User.Identity.IsAuthenticated)
+{ 
+     <img src="@Avatar"/> 
     <b>You are logged in as: @GivenName @Surname</b>
     <a class="ml-md-auto btn btn-primary"
        href="/Logout"
        target="_top">
         Logout
     </a>
-}
-else
-{
+ } 
+ else 
+ { 
     <a class="ml-md-auto btn btn-primary"
        href="/Login"
        target="_top">
         Login
     </a>
-}
+ } 
 
 @code {
     private ClaimsPrincipal User;

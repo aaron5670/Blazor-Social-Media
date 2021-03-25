@@ -6,25 +6,27 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.Cosmos.Linq;
 
 namespace SocialMediaApplication.Data
 {
     public class UserService
     {
-        public UserService()
+        public async Task LoginUser(string username)
         {
-            // Generate some dummy data.  
             using (var userRepository = new UserRepository(new CommunityDbContext()))
             {
-                userRepository.GenerateDatabase();
+                var user = userRepository.Find(u => u.Name == username).Single();
 
-                for (var i = 0; i < 5; i++)
+                Console.WriteLine(user);
+                
+                if (user != null)
                 {
                     userRepository
                         .Add(
                             new User
                             {
-                                Name = "Bassam_" + i,
+                                Name = username,
                                 Posts = new Collection<Post>
                                 {
                                     new Post
@@ -35,32 +37,9 @@ namespace SocialMediaApplication.Data
                                 }
                             }
                         );
+                    userRepository.Commit();
                 }
-
-                userRepository.Commit();
-            }
-        }
-
-        public async Task  LoginUser(string username)
-        {
-            using (var userRepository = new UserRepository(new CommunityDbContext()))
-            {
-                userRepository
-                    .Add(
-                        new User
-                        {
-                            Name = username,
-                            Posts = new Collection<Post>
-                            {
-                                new Post
-                                {
-                                    Title = "www.bassam.ml",
-                                    Content = "My page"
-                                }
-                            }
-                        }
-                    );
-                userRepository.Commit();
+                
             }
         }
 

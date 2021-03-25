@@ -1,7 +1,7 @@
 ﻿@using System.Security.Claims
 @using Microsoft.AspNetCore.Http
 
-@if (User.Identity?.Name != null)
+@if (User?.Identity?.Name != null)
 {
     <img src="@Avatar" alt=""/>
     <b>You are logged in as: @GivenName @Surname</b>

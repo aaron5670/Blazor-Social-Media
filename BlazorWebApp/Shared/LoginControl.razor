@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor _httpContextAccessor
 @inject HttpClient Http
-@if (User.Identity?.Name != null)
+@if (User.Identity.Name != null)
 {
     <img src="@Avatar" />
     <b>You are logged in as: @GivenName @Surname</b>

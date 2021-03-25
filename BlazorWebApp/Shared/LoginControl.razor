@@ -2,6 +2,9 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor _httpContextAccessor
 @inject HttpClient Http
+@{
+    System.Diagnostics.Debug.Assert(User.Identity != null, "User.Identity != null");
+}
 @if (User.Identity.Name != null)
 {
     <img src="@Avatar" />

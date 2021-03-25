@@ -1,35 +1,24 @@
 ﻿@using System.Security.Claims
 @using Microsoft.AspNetCore.Http
 @inject HttpContextAccessor _httpContextAccessor
-@try
+@if (User.Identity?.Name != null)
 {
-    @if (User.Identity?.Name != null)
-    {
-        <img src="@Avatar" alt=""/>
-        <b>You are logged in as: @GivenName @Surname</b>
-        <a class="ml-md-auto btn btn-primary"
-           href="/Logout"
-           target="_top">
-            Logout
-        </a>
-    }
-    else
-    {
-        <a class="ml-md-auto btn btn-primary"
-           href="/Login"
-           target="_top">
-            Login
-        </a>
-    }
-}catch{
+    <img src="@Avatar" alt=""/>
+    <b>You are logged in as: @GivenName @Surname</b>
     <a class="ml-md-auto btn btn-primary"
-        href="/Login"
-        target="_top">
-               Login
-               </a>
+       href="/Logout"
+       target="_top">
+        Logout
+    </a>
 }
-
-
+else
+{
+    <a class="ml-md-auto btn btn-primary"
+       href="/Login"
+       target="_top">
+        Login
+    </a>
+}
 
 @code {
     private ClaimsPrincipal User;
@@ -40,10 +29,10 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        
+
         try
         {
-            // Set the user to determine if they are logged in
+    // Set the user to determine if they are logged in
             User = _httpContextAccessor.HttpContext?.User;
 
             var givenName = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.GivenName);

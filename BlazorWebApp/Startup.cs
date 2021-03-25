@@ -4,13 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SocialMediaApplication.Data;
-using System.Net.Http;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace SocialMediaApplication
 {
@@ -31,20 +24,7 @@ namespace SocialMediaApplication
             
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<UserService>();
-            
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-            
-            services.AddAuthentication().AddGoogle(options =>
-            {
-                options.ClientId = Configuration["Google:ClientId"];
-                options.ClientSecret = Configuration["Google:ClientSecret"];
-                options.ClaimActions.MapJsonKey("urn:google:profile", "link");
-                options.ClaimActions.MapJsonKey("urn:google:image", "picture");
-            });
-            
             // Pass settings to other components
             services.AddSingleton<IConfiguration>(Configuration);
         }

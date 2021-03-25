@@ -2,32 +2,39 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor _httpContextAccessor
 @inject HttpClient Http
-@if (User.Identity.Name != null)
+
+@if (User.Identity != null && User.Identity.Name != null)
 {
-    <img src="@Avatar" />
+    <img src="@Avatar"/>
     <b>You are logged in as: @GivenName @Surname</b>
     <a class="ml-md-auto btn btn-primary"
        href="/Logout"
-       target="_top">Logout</a>
+       target="_top">
+        Logout
+    </a>
 }
 else
 {
     <a class="ml-md-auto btn btn-primary"
        href="/Login"
-       target="_top">Login</a>
+       target="_top">
+        Login
+    </a>
 }
+
 @code {
     private ClaimsPrincipal User;
     private string GivenName;
     private string Surname;
     private string Avatar;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        
+
         try
         {
-            // Set the user to determine if they are logged in
+    // Set the user to determine if they are logged in
             if (_httpContextAccessor.HttpContext != null)
             {
                 User = _httpContextAccessor.HttpContext.User;
@@ -53,4 +60,5 @@ else
             Console.WriteLine(e.ToString());
         }
     }
+
 }

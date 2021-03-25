@@ -2,27 +2,35 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor _httpContextAccessor
 @inject HttpClient Http
-
-
-
-@if (User.Identity?.Name != null)
+@try
 {
-    <img src="@Avatar" alt=""/>
-    <b>You are logged in as: @GivenName @Surname</b>
+    @if (User.Identity?.Name != null)
+    {
+        <img src="@Avatar" alt=""/>
+        <b>You are logged in as: @GivenName @Surname</b>
+        <a class="ml-md-auto btn btn-primary"
+           href="/Logout"
+           target="_top">
+            Logout
+        </a>
+    }
+    else
+    {
+        <a class="ml-md-auto btn btn-primary"
+           href="/Login"
+           target="_top">
+            Login
+        </a>
+    }
+}catch{
     <a class="ml-md-auto btn btn-primary"
-       href="/Logout"
-       target="_top">
-        Logout
-    </a>
+        href="/Login"
+        target="_top">
+               Login
+               </a>
 }
-else
-{
-    <a class="ml-md-auto btn btn-primary"
-       href="/Login"
-       target="_top">
-        Login
-    </a>
-}
+
+
 
 @code {
     private ClaimsPrincipal User;

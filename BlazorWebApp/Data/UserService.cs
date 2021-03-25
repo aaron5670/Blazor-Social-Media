@@ -14,32 +14,27 @@ namespace SocialMediaApplication.Data
     {
         public async Task LoginUser(string username)
         {
-            using (var userRepository = new UserRepository(new CommunityDbContext()))
+            using var userRepository = new UserRepository(new CommunityDbContext());
+            var user = userRepository.GetAll().Any(u => u.Name == username);
+            
+            if (!user)
             {
-                var user = userRepository.Find(u => u.Name == username).Single();
-
-                Console.WriteLine(user);
-                
-                if (user != null)
-                {
-                    userRepository
-                        .Add(
-                            new User
+                userRepository
+                    .Add(
+                        new User
+                        {
+                            Name = username,
+                            Posts = new Collection<Post>
                             {
-                                Name = username,
-                                Posts = new Collection<Post>
+                                new Post
                                 {
-                                    new Post
-                                    {
-                                        Title = "www.bassam.ml",
-                                        Content = "My page"
-                                    }
+                                    Title = "www.bassam.ml",
+                                    Content = "My page"
                                 }
                             }
-                        );
-                    userRepository.Commit();
-                }
-                
+                        }
+                    );
+                userRepository.Commit();
             }
         }
 

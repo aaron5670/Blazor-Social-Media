@@ -48,8 +48,8 @@ namespace CosmosDbSQLAPI
 
     public void GenerateDatabase()
     {
-      this.communityDbContext.Database.EnsureDeleted();
-      this.communityDbContext.Database.EnsureCreated();
+      communityDbContext.Database.EnsureDeleted();
+      communityDbContext.Database.EnsureCreated();
     }
 
 

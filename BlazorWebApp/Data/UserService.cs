@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using CosmosDbSQLAPI;
 using Entities;
 using System.Collections.Generic;
@@ -67,6 +68,18 @@ namespace SocialMediaApplication.Data
                 userRepository.Include(nameof(User.Posts));
                 Debug.WriteLine(userRepository.GetAll());
                 return userRepository.GetAll();
+            }
+        }
+        
+        public List<Post> GetAllPosts()
+        {
+            // Todo async and Error code!  
+            using (var userRepository = new UserRepository(new CommunityDbContext()))
+            {
+                var posts = new List<Post>();
+                var users = userRepository.GetAll();
+                users.ForEach(user => { posts.AddRange(user.Posts); });
+                return posts;
             }
         }
     }

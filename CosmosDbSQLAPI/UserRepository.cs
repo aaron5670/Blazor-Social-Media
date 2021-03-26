@@ -31,7 +31,7 @@ namespace CosmosDbSQLAPI
       return communityDbContext.Users.Where(expression);
     }
 
-    public ICollection<User> GetAll()
+    public List<User> GetAll()
     {
       return communityDbContext.Users.ToList();
     }

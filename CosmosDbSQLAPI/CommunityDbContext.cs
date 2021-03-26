@@ -12,8 +12,8 @@ namespace CosmosDbSQLAPI
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var Endpoint = "https://social-media-account.documents.azure.com:443/";
-            var Key = "S33BzGJ9MmPO8gdrnDuBQfDJwovc8ud5EwEIX2UfI3DhJDOlcEHo2BqatxWnjcjpGbUYpHr6lD2SKBzAdyVcyw==";
+            var Endpoint = "https://localhost:8081";
+            var Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
 
             optionsBuilder.UseCosmos(Endpoint, Key, "CommunityDatabase")
                 .UseLoggerFactory(GenerateLoggerFactory())

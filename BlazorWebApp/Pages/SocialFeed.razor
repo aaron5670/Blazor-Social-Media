@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.SignalR.Client;
 @using SocialMediaApplication.Data
 @using Entities
+@using SocialMediaApplication.DTO
 @inject UserService UserService
 
 <div class="flex justify-center w-100 h-screen px-4 text-gray-700">
@@ -84,9 +85,9 @@
                                 <span class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>
                                 <div class="flex flex-col flex-grow ml-4">
                                     <div class="flex">
-                                        <span class="font-semibold">@item.Content</span>
+                                        <span class="font-semibold">@item.Username</span>
                                     </div>
-                                    <p class="mt-1">@item.Title</p>
+                                    <p class="mt-1">@item.Content</p>
                                     <div class="flex mt-2">
                                         <button class="text-sm font-semibold">Like</button>
                                         <button class="ml-2 text-sm font-semibold">Reply</button>
@@ -111,18 +112,16 @@
                             <span class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>
                             <div class="flex flex-col flex-grow ml-4">
                                 <div class="flex">
-                                    <span class="font-semibold">@item.Content</span>
+                                    <span class="font-semibold">@item.Username</span>
                                 </div>
-                                <p class="mt-1">@item.Title</p>
+                                <p class="mt-1">@item.Content</p>
                                 <div class="flex mt-2">
                                     <button class="text-sm font-semibold">Like</button>
-                                    <button class="ml-2 text-sm font-semibold">Reply</button>
                                     <button class="ml-2 text-sm font-semibold">Share</button>
                                 </div>
                             </div>
                         </div>
                     }
-
                 }
             </div>
         </div>
@@ -132,13 +131,15 @@
 @code {
     private bool _isChatting = false;
     private string _username = string.Empty;
-    private string _message;
+    private string _message; 
     private string _newMessage;
     private string _hubUrl;
     private HubConnection _hubConnection;
     private List<Message> _messages = new List<Message>();
+    
     ICollection<User> users;
-    List<Post> posts;
+    List<PostDTO> posts;
+    
     string ErrorText { get; set; } = string.Empty;
     
     public async Task Chat()
@@ -222,7 +223,6 @@
         ErrorText = string.Empty;
         await UserService.LoginUser(_username);
     }
-
     
     protected override async Task OnInitializedAsync()
     {

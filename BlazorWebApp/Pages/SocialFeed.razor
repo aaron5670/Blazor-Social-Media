@@ -78,12 +78,6 @@
                     </div>
                     @foreach (var item in _messages)
                     {
-                        @if (item.IsNotice)
-                        {
-                            <div class="alert alert-info">@item.Username @removeNotice(item.Body)</div>
-                        }
-                        else
-                        {
                             <div class="flex w-full p-8 border-b border-gray-300">
                                 <span class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>
                                 <div class="flex flex-col flex-grow ml-4">
@@ -98,7 +92,6 @@
                                     </div>
                                 </div>
                             </div>
-                        }
                     }
                 }
             </div>
@@ -109,9 +102,7 @@
                 <h3 class="mt-6 font-semibold">Trending</h3>
                 @foreach (var item in _messages)
                 {
-                    @if (!item.IsNotice)
-                    {
-                        <div class="flex w-full p-8 border-b border-gray-300">
+                    <div class="flex w-full p-8 border-b border-gray-300">
                             <span class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>
                             <div class="flex flex-col flex-grow ml-4">
                                 <div class="flex">
@@ -125,7 +116,6 @@
                                 </div>
                             </div>
                         </div>
-                    }
                 }
             </div>
         </div>
@@ -142,14 +132,7 @@
     private List<Message> _messages = new List<Message>();
     ICollection<User> users;
     string ErrorText { get; set; } = string.Empty;
-
-    public string removeNotice(string body)
-    {
-        string notice = "[Notice]";
-        string message = body.Remove(0, notice.Length);
-        return message;
-    }
-
+    
     public async Task Chat()
     {
         if (string.IsNullOrWhiteSpace(_username))
@@ -174,8 +157,6 @@
             _hubConnection.On<string, string>("Broadcast", BroadcastMessage);
             
             await _hubConnection.StartAsync();
-            
-            await SendAsync($"[Notice] logged in");
         }
         catch (Exception e)
         {
@@ -195,8 +176,6 @@
     {
         if (_isChatting)
         {
-            await SendAsync($"[Notice] logged out.");
-
             await _hubConnection.StopAsync();
             await _hubConnection.DisposeAsync();
 
@@ -228,9 +207,6 @@
         public string Body { get; set; }
         public bool Mine { get; set; }
 
-        public bool IsNotice => Body.StartsWith("[Notice]");
-
-        public string CSS => Mine ? "sent" : "received";
     }
     
     public async Task LoginUser()

@@ -31,7 +31,7 @@ namespace CosmosDbSQLAPI
       return communityDbContext.Users.Where(expression);
     }
 
-    public ICollection<User> GetAll()
+    public List<User> GetAll()
     {
       return communityDbContext.Users.ToList();
     }
@@ -48,8 +48,8 @@ namespace CosmosDbSQLAPI
 
     public void GenerateDatabase()
     {
-      this.communityDbContext.Database.EnsureDeleted();
-      this.communityDbContext.Database.EnsureCreated();
+      communityDbContext.Database.EnsureDeleted();
+      communityDbContext.Database.EnsureCreated();
     }
 
 

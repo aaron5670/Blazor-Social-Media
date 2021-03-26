@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos.Linq;
+using SocialMediaApplication.DTO;
 
 namespace SocialMediaApplication.Data
 {
@@ -41,46 +41,50 @@ namespace SocialMediaApplication.Data
 
         public async Task AddPost(string username, string message)
         {
-            using (var userRepository = new UserRepository(new CommunityDbContext()))
+            using var userRepository = new UserRepository(new CommunityDbContext());
+            var user = userRepository.Find(u => u.Name == username).Single();
+            user.Posts.Add(new Post()
             {
-                var user = userRepository.Find(u => u.Name == username).Single();
-                user.Posts.Add(new Post() {Content = message, Title = "I love you CosmosDb!"});
-                userRepository.Commit();
-            }
+                Content = message,
+                Title = "I love you CosmosDb!"
+            });
+            userRepository.Commit();
         }
 
         public void DeleteUser(string username)
         {
             // Todo async and  Error code!  
-            using (var userRepository = new UserRepository(new CommunityDbContext()))
-            {
-                var user = userRepository.Find(u => u.Name == username).Single();
-                userRepository.Delete(user);
-                userRepository.Commit();
-            }
+            using var userRepository = new UserRepository(new CommunityDbContext());
+            var user = userRepository.Find(u => u.Name == username).Single();
+            userRepository.Delete(user);
+            userRepository.Commit();
         }
 
         public ICollection<User> GetUsers()
         {
             // Todo async and Error code!  
-            using (var userRepository = new UserRepository(new CommunityDbContext()))
-            {
-                userRepository.Include(nameof(User.Posts));
-                Debug.WriteLine(userRepository.GetAll());
-                return userRepository.GetAll();
-            }
+            using var userRepository = new UserRepository(new CommunityDbContext());
+            userRepository.Include(nameof(User.Posts));
+            Debug.WriteLine(userRepository.GetAll());
+            return userRepository.GetAll();
         }
         
-        public List<Post> GetAllPosts()
+        public List<PostDTO> GetAllPosts()
         {
             // Todo async and Error code!  
-            using (var userRepository = new UserRepository(new CommunityDbContext()))
+            using var userRepository = new UserRepository(new CommunityDbContext());
+            var posts = new List<PostDTO>();
+            var users = userRepository.GetAll();
+            users.ForEach(user =>
             {
-                var posts = new List<Post>();
-                var users = userRepository.GetAll();
-                users.ForEach(user => { posts.AddRange(user.Posts); });
-                return posts;
-            }
+                posts.AddRange(user.Posts.Select(post => 
+                    new PostDTO
+                    {
+                        Username = user.Name,
+                        Content = post.Content
+                    }));
+            });
+            return posts;
         }
     }
 }

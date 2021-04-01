@@ -165,7 +165,7 @@
 
             _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
             _hubConnection = new HubConnectionBuilder().WithUrl(_hubUrl).Build();
-            _hubConnection.On<string, string>("Broadcast", BroadcastMessage);
+            _hubConnection.On<string, string, string>("Broadcast", BroadcastMessage);
             await _hubConnection.StartAsync();
 
         }
@@ -176,9 +176,9 @@
         }
     }
 
-    private async Task BroadcastMessage(string name, string message)
+    private async Task BroadcastMessage(string name, string message, string postId)
     {
-        posts.Insert(0, new PostDTO {Username = name, Content = message});
+        posts.Insert(0, new PostDTO {Username = name, Content = message, PostId = new Guid(postId)});
         StateHasChanged();
     }
 
@@ -198,8 +198,8 @@
     {
         if (_isChatting && !string.IsNullOrWhiteSpace(message))
         {
-            await _hubConnection.SendAsync("Broadcast", _username, message);
-            await UserService.AddPost(_username, message);
+            var post = await UserService.AddPost(_username, message);
+            await _hubConnection.SendAsync("Broadcast", _username, message, post.PostId.ToString());
             _newMessage = string.Empty;
             await Task.Run(() => posts = UserService.GetAllPosts());
         }

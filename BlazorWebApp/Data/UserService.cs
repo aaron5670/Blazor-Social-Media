@@ -31,18 +31,23 @@ namespace SocialMediaApplication.Data
             }
         }
 
-        public async Task AddPost(string username, string message)
+        public async Task<Post> AddPost(string username, string message)
         {
             using var userRepository = new UserRepository(new CommunityDbContext());
             var user = userRepository.Find(u => u.Name == username).Single();
             Console.WriteLine(user.Posts);
-            user.Posts.Add(new Post()
+
+            var newPost = new Post()
             {
                 Content = message,
                 Likes = 0,
                 Timestamp = DateTime.Now
-            });
+            };
+            
+            user.Posts.Add(newPost);
             userRepository.Commit();
+
+            return newPost;
         }
 
         public void DeleteUser(string username)

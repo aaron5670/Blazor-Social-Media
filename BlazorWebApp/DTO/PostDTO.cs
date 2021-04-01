@@ -10,5 +10,7 @@ namespace SocialMediaApplication.DTO
         public string Content { get; set; }
         
         public int Likes { get; set; }
+        
+        public DateTime Timestamp { get; set; }
     }
 }

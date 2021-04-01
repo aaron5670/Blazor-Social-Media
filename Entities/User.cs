@@ -11,6 +11,6 @@ namespace Entities
 
     public ICollection<Post> Posts { get; set; }
     
-    public ICollection<LikedPosts> LikedPosts { get; set; }
+    public ICollection<LikedPost> LikedPosts { get; set; }
   }
 }

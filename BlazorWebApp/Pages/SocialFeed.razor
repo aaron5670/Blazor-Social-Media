@@ -209,7 +209,7 @@
         foreach (var post in posts.Where(post => post.PostId == postId))
         {
             post.Likes += 1;
-            await UserService.UpdatePost(post.PostId, post.Username);
+            await UserService.AddedLike(post.PostId, post.Username, _username);
         }
         StateHasChanged();
     }

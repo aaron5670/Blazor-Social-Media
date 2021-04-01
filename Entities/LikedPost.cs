@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities
 {
-  public class LikedPosts
+  public class LikedPost
   {
-    [Key]
-    public Guid PostId { get; set; }
+    // [Key]
+    public string PostId { get; set; }
 
     public DateTime Timestamp { get; set; }
   }

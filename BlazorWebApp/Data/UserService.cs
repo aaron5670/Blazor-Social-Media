@@ -82,12 +82,19 @@ namespace SocialMediaApplication.Data
             return posts;
         }
 
-        public async Task UpdatePost(Guid postId, string username)
+        public async Task AddedLike(Guid postId, string postUsername, string username)
         {
             using var userRepository = new UserRepository(new CommunityDbContext());
             var user = userRepository.Find(u => u.Name == username).Single();
-            var post = (user?.Posts).Single(post => post.PostId == postId);
-            post.Likes += 1;
+            
+            // var post = (user?.Posts).Single(post => post.PostId == postId);
+            // post.Likes += 1;
+            
+            user.LikedPosts.Add(new LikedPost()
+            {
+                PostId = "postId",
+                Timestamp = DateTime.Now
+            });
             userRepository.Commit();
         }
     }

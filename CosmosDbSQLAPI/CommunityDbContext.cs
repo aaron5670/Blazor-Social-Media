@@ -9,7 +9,7 @@ namespace CosmosDbSQLAPI
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
-        public DbSet<LikedPosts> LikedPosts { get; set; }
+        public DbSet<LikedPost> LikedPosts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

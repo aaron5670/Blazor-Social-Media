@@ -46,13 +46,6 @@ namespace CosmosDbSQLAPI
       _ = communityDbContext.Users.Include(navigationPropertyPath);
     }
 
-    public void GenerateDatabase()
-    {
-      communityDbContext.Database.EnsureDeleted();
-      communityDbContext.Database.EnsureCreated();
-    }
-
-
     #region IDisposable Support
     private bool disposedValue = false; // To detect redundant calls
 

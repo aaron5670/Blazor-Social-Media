@@ -10,5 +10,7 @@ namespace Entities
     public string Name { get; set; }
 
     public ICollection<Post> Posts { get; set; }
+    
+    public ICollection<LikedPosts> LikedPosts { get; set; }
   }
 }

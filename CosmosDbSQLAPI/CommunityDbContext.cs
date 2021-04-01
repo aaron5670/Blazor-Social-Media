@@ -9,6 +9,7 @@ namespace CosmosDbSQLAPI
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<LikedPosts> LikedPosts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -23,7 +24,8 @@ namespace CosmosDbSQLAPI
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().ToContainer("Users");
-            modelBuilder.Entity<User>().OwnsMany(s => s.Posts);
+            modelBuilder.Entity<User>().OwnsMany(user => user.Posts);
+            modelBuilder.Entity<User>().OwnsMany(user => user.LikedPosts);
             base.OnModelCreating(modelBuilder);
         }
 

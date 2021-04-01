@@ -93,11 +93,16 @@ namespace SocialMediaApplication.Data
         {
             using var userRepository = new UserRepository(new CommunityDbContext());
             var user = userRepository.Find(u => u.Name == username).Single();
-
-            var post = (user?.Posts).Single(post => post.PostId == postId);
-            post.Likes += 1;
+            var author = userRepository.Find(u => u.Name == postUsername).Single();
             
-            Console.WriteLine("POSTID: " + postId);
+            //ToDo: Hier zit de fout nog...
+            Console.WriteLine($"postID: {postId.ToString()}");
+            Console.WriteLine($"postUsername: {postUsername}");
+            Console.WriteLine($"username: {username}");
+            
+
+            var post = (author?.Posts).Single(post => post.PostId == postId);
+            post.Likes += 1;
             
             user.LikedPosts.Add(new LikedPost {PostId = postId, Timestamp = DateTime.Now});
             userRepository.Commit();

@@ -58,7 +58,8 @@
                 else
                 {
                     <div class="flex w-full p-8 border-b-4 border-gray-300">
-                        <span class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>
+                        <img src="https://icotar.com/initials/@_username"
+                             class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
                         <div class="flex flex-col flex-grow ml-4">
                             <textarea 
                                 @bind="@_newMessage"
@@ -82,7 +83,8 @@
                         @foreach (var item in posts)
                         {
                             <div class="flex w-full p-8 border-b border-gray-300">
-                                <span class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>
+                                <img src="https://icotar.com/initials/@item.Username"
+                                     class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
                                 <div class="flex flex-col flex-grow ml-4">
                                     <div class="flex">
                                         <span class="font-semibold">@item.Username</span>
@@ -153,7 +155,7 @@
         {
             await LoginUser();
             _isChatting = true;
-            
+
             string baseUrl = navigationManager.BaseUri;
 
             _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
@@ -172,7 +174,7 @@
     private void BroadcastMessage(string name, string message)
     {
         bool isMine = name.Equals(_username, StringComparison.OrdinalIgnoreCase);
-        posts.Add(new PostDTO{Username = name, Content = message});
+        posts.Insert(0, new PostDTO {Username = name, Content = message});
         StateHasChanged();
     }
 

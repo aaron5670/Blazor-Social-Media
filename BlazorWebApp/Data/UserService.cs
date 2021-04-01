@@ -1,4 +1,5 @@
-﻿using CosmosDbSQLAPI;
+﻿using System;
+using CosmosDbSQLAPI;
 using Entities;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,7 +36,8 @@ namespace SocialMediaApplication.Data
             user.Posts.Add(new Post()
             {
                 Content = message,
-                Likes = 0
+                Likes = 0,
+                Timestamp = DateTime.Now
             });
             userRepository.Commit();
         }
@@ -71,8 +73,9 @@ namespace SocialMediaApplication.Data
                     {
                         Username = user.Name,
                         Content = post.Content,
-                        Likes = post.Likes
-                    }));
+                        Likes = post.Likes,
+                        Timestamp = post.Timestamp
+                    }).OrderByDescending(post => post.Timestamp));
             });
             return posts;
         }

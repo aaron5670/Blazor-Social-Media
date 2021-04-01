@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SocialMediaApplication.DTO;
 
 namespace SocialMediaApplication.Data
@@ -71,6 +72,7 @@ namespace SocialMediaApplication.Data
                 posts.AddRange(user.Posts.Select(post => 
                     new PostDTO
                     {
+                        PostId = post.PostId,
                         Username = user.Name,
                         Content = post.Content,
                         Likes = post.Likes,
@@ -78,6 +80,15 @@ namespace SocialMediaApplication.Data
                     }).OrderByDescending(post => post.Timestamp));
             });
             return posts;
+        }
+
+        public async Task UpdatePost(Guid postId, string username)
+        {
+            using var userRepository = new UserRepository(new CommunityDbContext());
+            var user = userRepository.Find(u => u.Name == username).Single();
+            var post = (user?.Posts).Single(post => post.PostId == postId);
+            post.Likes += 1;
+            userRepository.Commit();
         }
     }
 }

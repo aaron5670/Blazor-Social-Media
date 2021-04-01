@@ -5,6 +5,7 @@ namespace SocialMediaApplication.DTO
 {
     public class PostDTO
     {
+        public Guid PostId { get; set; }
         public string Username { get; set; }
     
         public string Content { get; set; }

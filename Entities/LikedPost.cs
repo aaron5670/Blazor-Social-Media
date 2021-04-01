@@ -6,7 +6,7 @@ namespace Entities
   public class LikedPost
   {
     // [Key]
-    public string PostId { get; set; }
+    public Guid PostId { get; set; }
 
     public DateTime Timestamp { get; set; }
   }

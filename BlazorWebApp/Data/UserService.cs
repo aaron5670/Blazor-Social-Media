@@ -23,7 +23,8 @@ namespace SocialMediaApplication.Data
                     .Add(
                         new User
                         {
-                            Name = username
+                            Name = username,
+                            LikedPosts = new List<LikedPost>()
                         }
                     );
                 userRepository.Commit();
@@ -34,6 +35,7 @@ namespace SocialMediaApplication.Data
         {
             using var userRepository = new UserRepository(new CommunityDbContext());
             var user = userRepository.Find(u => u.Name == username).Single();
+            Console.WriteLine(user.Posts);
             user.Posts.Add(new Post()
             {
                 Content = message,
@@ -86,15 +88,13 @@ namespace SocialMediaApplication.Data
         {
             using var userRepository = new UserRepository(new CommunityDbContext());
             var user = userRepository.Find(u => u.Name == username).Single();
+
+            var post = (user?.Posts).Single(post => post.PostId == postId);
+            post.Likes += 1;
             
-            // var post = (user?.Posts).Single(post => post.PostId == postId);
-            // post.Likes += 1;
+            Console.WriteLine("POSTID: " + postId);
             
-            user.LikedPosts.Add(new LikedPost()
-            {
-                PostId = "postId",
-                Timestamp = DateTime.Now
-            });
+            user.LikedPosts.Add(new LikedPost {PostId = postId, Timestamp = DateTime.Now});
             userRepository.Commit();
         }
     }

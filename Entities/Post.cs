@@ -7,12 +7,9 @@ namespace Entities
   {
     [Key]
     public Guid PostId { get; set; }
-
-    public string Title { get; set; }
-
+    
     public string Content { get; set; }
-
-    public User User { get; set; }
-
+    
+    public int Likes { get; set; }
   }
 }

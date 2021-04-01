@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
-using CosmosDbSQLAPI;
+﻿using CosmosDbSQLAPI;
 using Entities;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,15 +21,7 @@ namespace SocialMediaApplication.Data
                     .Add(
                         new User
                         {
-                            Name = username,
-                            Posts = new Collection<Post>
-                            {
-                                new Post
-                                {
-                                    Title = "www.bassam.ml",
-                                    Content = "My page"
-                                }
-                            }
+                            Name = username
                         }
                     );
                 userRepository.Commit();
@@ -46,7 +35,7 @@ namespace SocialMediaApplication.Data
             user.Posts.Add(new Post()
             {
                 Content = message,
-                Title = "I love you CosmosDb!"
+                Likes = 0
             });
             userRepository.Commit();
         }
@@ -81,7 +70,8 @@ namespace SocialMediaApplication.Data
                     new PostDTO
                     {
                         Username = user.Name,
-                        Content = post.Content
+                        Content = post.Content,
+                        Likes = post.Likes
                     }));
             });
             return posts;

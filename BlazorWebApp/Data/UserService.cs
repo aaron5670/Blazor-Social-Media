@@ -24,7 +24,7 @@ namespace SocialMediaApplication.Data
                         new User
                         {
                             Name = username,
-                            LikedPosts = new List<LikedPost>()
+                            LikedPosts = new List<LikedPost>(){}
                         }
                     );
                 userRepository.Commit();
@@ -100,9 +100,15 @@ namespace SocialMediaApplication.Data
             Console.WriteLine($"postUsername: {postUsername}");
             Console.WriteLine($"username: {username}");
             
-
             var post = (author?.Posts).Single(post => post.PostId == postId);
             post.Likes += 1;
+
+            if (user.LikedPosts == null || user.LikedPosts.Count == 0)
+            {
+                user.LikedPosts = new List<LikedPost>();    
+            }
+
+            Console.WriteLine($"likedposts: {user.LikedPosts}");
             
             user.LikedPosts.Add(new LikedPost {PostId = postId, Timestamp = DateTime.Now});
             userRepository.Commit();

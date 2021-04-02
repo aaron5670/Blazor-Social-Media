@@ -168,7 +168,7 @@
     private string _newMessage;
     private string _hubUrl;
     private HubConnection _hubConnection;
-    
+
     ICollection<User> _users;
     List<PostDTO> _posts;
     User _user;
@@ -191,9 +191,9 @@
             var baseUrl = navigationManager.BaseUri;
 
             _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
-            
+
             _hubConnection = new HubConnectionBuilder().WithUrl(_hubUrl).Build();
-            
+
             _hubConnection.On<string, string, string>("BroadcastMessage", BroadcastMessage);
             _hubConnection.On<string, bool>("BroadcastLike", BroadcastLike);
             await _hubConnection.StartAsync();
@@ -210,7 +210,7 @@
         _posts.Insert(0, new PostDTO {Username = name, Content = message, PostId = new Guid(postId)});
         StateHasChanged();
     }
-    
+
     private void BroadcastLike(string postId, bool isLike)
     {
         var post = _posts.Find(p => p.PostId == new Guid(postId));

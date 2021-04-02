@@ -16,7 +16,7 @@ namespace SocialMediaApplication.Data
         {
             using var userRepository = new UserRepository(new CommunityDbContext());
             var user = userRepository.GetAll().Any(u => u.Name == username);
-            
+
             if (!user)
             {
                 userRepository
@@ -42,11 +42,11 @@ namespace SocialMediaApplication.Data
                 Likes = 0,
                 Timestamp = DateTime.Now
             };
-            
+
             if (user.Posts == null || user.Posts.Count == 0)
-                user.Posts = new List<Post>();    
-            
-            
+                user.Posts = new List<Post>();
+
+
             user.Posts.Add(newPost);
             userRepository.Commit();
 
@@ -78,7 +78,7 @@ namespace SocialMediaApplication.Data
             Debug.WriteLine(userRepository.GetAll());
             return userRepository.GetAll();
         }
-        
+
         public List<PostDTO> GetAllPosts()
         {
             // Todo async and Error code!  
@@ -87,7 +87,7 @@ namespace SocialMediaApplication.Data
             var users = userRepository.GetAll();
             users.ForEach(user =>
             {
-                posts.AddRange(user.Posts.Select(post => 
+                posts.AddRange(user.Posts.Select(post =>
                     new PostDTO
                     {
                         PostId = post.PostId,
@@ -106,7 +106,7 @@ namespace SocialMediaApplication.Data
             var user = userRepository.Find(u => u.Name == username).Single();
             var author = userRepository.Find(u => u.Name == postUsername).Single();
             var post = author?.Posts.Single(p => p.PostId == postId);
-            
+
             if (post != null) post.Likes += 1;
 
             if (user.LikedPosts == null || user.LikedPosts.Count == 0)
@@ -121,7 +121,7 @@ namespace SocialMediaApplication.Data
                         user.LikedPosts.Remove(userLikedPost);
                     }
                 }
-                
+
                 if (post != null) post.Likes -= 1;
                 userRepository.Commit();
                 return false;

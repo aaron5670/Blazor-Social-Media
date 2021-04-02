@@ -62,6 +62,14 @@ namespace SocialMediaApplication.Data
             userRepository.Commit();
         }
 
+        public User GetUserByUsername(string username)
+        {
+            // Todo async and  Error code!  
+            using var userRepository = new UserRepository(new CommunityDbContext());
+            var user = userRepository.Find(u => u.Name == username).Single();
+            return user;
+        }
+
         public ICollection<User> GetUsers()
         {
             // Todo async and Error code!  

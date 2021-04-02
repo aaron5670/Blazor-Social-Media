@@ -91,23 +91,24 @@
                                     </div>
                                     <p class="mt-1">@post.Content</p>
                                     <div class="flex mt-2">
-                                        
-                                        @foreach (var like in _user.LikedPosts)
+
+                                        @if (_user.LikedPosts.Any(p => p.PostId == post.PostId))
                                         {
-                                            @if (like.PostId == post.PostId)
-                                            {
-                                                <button class="text-sm font-semibold"
-                                                        @onclick="@(() => LikeAsync(post.PostId))">Unlike</button>
-                                                <button class="ml-2 text-sm font-semibold">Share</button>
-                                            }
-                                            else
-                                            {
-                                                <button class="text-sm font-semibold"
-                                                        @onclick="@(() => LikeAsync(post.PostId))">Like</button>
-                                                <button class="ml-2 text-sm font-semibold">Share</button>
-                                            }
+                                            <button class="text-sm font-semibold"
+                                                    @onclick="@(() => LikeAsync(post.PostId))">
+                                                Unlike
+                                            </button>
+                                            <button class="ml-2 text-sm font-semibold">Share</button>
                                         }
-                                        
+                                        else
+                                        {
+                                            <button class="text-sm font-semibold"
+                                                    @onclick="@(() => LikeAsync(post.PostId))">
+                                                Like
+                                            </button>
+                                            <button class="ml-2 text-sm font-semibold">Share</button>
+                                        }
+
                                     </div>
                                 </div>
                             </div>
@@ -133,20 +134,21 @@
                                 </div>
                                 <p class="mt-1">@post.Content</p>
                                 <div class="flex mt-2">
-                                    @foreach (var like in _user.LikedPosts)
+                                    @if (_user.LikedPosts.Any(p => p.PostId == post.PostId))
                                     {
-                                        @if (like.PostId == post.PostId)
-                                        {
-                                            <button class="text-sm font-semibold"
-                                                    @onclick="@(() => LikeAsync(post.PostId))">Unlike</button>
-                                            <button class="ml-2 text-sm font-semibold">Share</button>
-                                        }
-                                        else
-                                        {
-                                            <button class="text-sm font-semibold"
-                                                    @onclick="@(() => LikeAsync(post.PostId))">Like</button>
-                                            <button class="ml-2 text-sm font-semibold">Share</button>
-                                        }
+                                        <button class="text-sm font-semibold"
+                                                @onclick="@(() => LikeAsync(post.PostId))">
+                                            Unlike
+                                        </button>
+                                        <button class="ml-2 text-sm font-semibold">Share</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="text-sm font-semibold"
+                                                @onclick="@(() => LikeAsync(post.PostId))">
+                                            Like
+                                        </button>
+                                        <button class="ml-2 text-sm font-semibold">Share</button>
                                     }
                                 </div>
                             </div>
@@ -165,7 +167,7 @@
     private string _newMessage;
     private string _hubUrl;
     private HubConnection _hubConnection;
-    
+
 
     ICollection<User> users;
     List<PostDTO> posts;
@@ -192,7 +194,6 @@
             _hubConnection = new HubConnectionBuilder().WithUrl(_hubUrl).Build();
             _hubConnection.On<string, string, string>("Broadcast", BroadcastMessage);
             await _hubConnection.StartAsync();
-
         }
         catch (Exception e)
         {
@@ -253,4 +254,5 @@
         await Task.Run(() => posts = UserService.GetAllPosts());
         Console.WriteLine(posts);
     }
+
 }

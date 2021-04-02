@@ -201,7 +201,6 @@
             var post = await UserService.AddPost(_username, message);
             await _hubConnection.SendAsync("Broadcast", _username, message, post.PostId.ToString());
             _newMessage = string.Empty;
-            await Task.Run(() => posts = UserService.GetAllPosts());
         }
     }
 

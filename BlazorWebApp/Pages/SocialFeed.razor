@@ -211,12 +211,10 @@
         {
             var isLiked = await UserService.AddedLike(post.PostId, post.Username, _username);
 
-            if (isLiked)
-            {
-                post.Likes += 1;
-            }
+            if (!isLiked) continue;
+            post.Likes += 1;
+            StateHasChanged();
         }
-        StateHasChanged();
     }
 
     private async Task LoginUser()

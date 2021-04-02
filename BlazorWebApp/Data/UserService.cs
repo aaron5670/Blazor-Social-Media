@@ -100,7 +100,7 @@ namespace SocialMediaApplication.Data
             return posts;
         }
 
-        public async Task<bool> AddedLike(Guid postId, string postUsername, string username)
+        public async Task<bool> HandlePostLike(Guid postId, string postUsername, string username)
         {
             using var userRepository = new UserRepository(new CommunityDbContext());
             var user = userRepository.Find(u => u.Name == username).Single();

@@ -78,9 +78,9 @@
                             </div>
                         </div>
                     </div>
-                    @if (posts?.Count > 0)
+                    @if (_posts?.Count > 0)
                     {
-                        @foreach (var post in posts)
+                        @foreach (var post in _posts)
                         {
                             <div class="flex w-full p-8 border-b border-gray-300">
                                 <img src="https://icotar.com/initials/@post.Username"
@@ -122,9 +122,9 @@
             <input class="flex items-center h-8 px-2 border border-gray-500 rounded-sm" type="search" Placeholder="Search…">
             <div>
                 <h3 class="mt-6 font-semibold">Trending</h3>
-                @if (posts?.Count > 0 && _isChatting)
+                @if (_posts?.Count > 0 && _isChatting)
                 {
-                    @foreach (var post in posts)
+                    @foreach (var post in _posts)
                     {
                         <div class="flex w-full p-8 border-b border-gray-300">
                             <span class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>
@@ -162,21 +162,20 @@
 </div>
 
 @code {
-    private bool _isChatting = false;
+    private bool _isChatting;
     private string _username = string.Empty;
     private string _message;
     private string _newMessage;
     private string _hubUrl;
     private HubConnection _hubConnection;
-
-
-    ICollection<User> users;
-    List<PostDTO> posts;
+    
+    ICollection<User> _users;
+    List<PostDTO> _posts;
     User _user;
 
     string ErrorText { get; set; } = string.Empty;
 
-    public async Task Chat()
+    private async Task Chat()
     {
         if (string.IsNullOrWhiteSpace(_username))
         {
@@ -189,7 +188,7 @@
             await LoginUser();
             _isChatting = true;
 
-            string baseUrl = navigationManager.BaseUri;
+            var baseUrl = navigationManager.BaseUri;
 
             _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
             
@@ -206,15 +205,15 @@
         }
     }
 
-    private async Task BroadcastMessage(string name, string message, string postId)
+    private void BroadcastMessage(string name, string message, string postId)
     {
-        posts.Insert(0, new PostDTO {Username = name, Content = message, PostId = new Guid(postId)});
+        _posts.Insert(0, new PostDTO {Username = name, Content = message, PostId = new Guid(postId)});
         StateHasChanged();
     }
     
-    private async Task BroadcastLike(string postId, bool isLike)
+    private void BroadcastLike(string postId, bool isLike)
     {
-        var post = posts.Find(p => p.PostId == new Guid(postId));
+        var post = _posts.Find(p => p.PostId == new Guid(postId));
         if (post != null)
         {
             if (isLike)
@@ -253,9 +252,9 @@
 
     private async Task LikeAsync(Guid postId)
     {
-        foreach (var post in posts.Where(post => post.PostId == postId))
+        foreach (var post in _posts.Where(post => post.PostId == postId))
         {
-            var isLiked = await UserService.AddedLike(post.PostId, post.Username, _username);
+            var isLiked = await UserService.HandlePostLike(post.PostId, post.Username, _username);
             await _hubConnection.SendAsync("BroadcastLike", postId, isLiked);
             await Task.Run(() => _user = UserService.GetUserByUsername(_username));
             if (!isLiked) continue;
@@ -272,8 +271,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Run(() => posts = UserService.GetAllPosts());
-        Console.WriteLine(posts);
+        await Task.Run(() => _posts = UserService.GetAllPosts());
+        Console.WriteLine(_posts);
     }
 
 }

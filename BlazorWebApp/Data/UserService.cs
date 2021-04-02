@@ -89,13 +89,13 @@ namespace SocialMediaApplication.Data
             return posts;
         }
 
-        public async Task AddedLike(Guid postId, string postUsername, string username)
+        public async Task<bool> AddedLike(Guid postId, string postUsername, string username)
         {
             using var userRepository = new UserRepository(new CommunityDbContext());
             var user = userRepository.Find(u => u.Name == username).Single();
             var author = userRepository.Find(u => u.Name == postUsername).Single();
-
             var post = author?.Posts.Single(p => p.PostId == postId);
+            
             if (post != null) post.Likes += 1;
 
             if (user.LikedPosts == null || user.LikedPosts.Count == 0)
@@ -103,8 +103,12 @@ namespace SocialMediaApplication.Data
                 user.LikedPosts = new List<LikedPost>();    
             }
             
+            if (user.LikedPosts != null && user.LikedPosts.Any(p => p.PostId == postId)) return false;
+
             user.LikedPosts.Add(new LikedPost {PostId = postId, Timestamp = DateTime.Now});
             userRepository.Commit();
+
+            return true;
         }
     }
 }

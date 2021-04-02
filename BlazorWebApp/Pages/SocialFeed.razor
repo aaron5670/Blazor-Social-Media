@@ -109,19 +109,19 @@
                 <h3 class="mt-6 font-semibold">Trending</h3>
                 @if (posts?.Count > 0 && _isChatting)
                 {
-                    @foreach (var item in posts)
+                    @foreach (var post in posts)
                     {
                         <div class="flex w-full p-8 border-b border-gray-300">
                             <span class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>
                             <div class="flex flex-col flex-grow ml-4">
                                 <div class="flex justify-content-between">
-                                    <span class="font-semibold">@item.Username</span>
-                                    <span><strong>@item.Likes </strong> likes</span>
+                                    <span class="font-semibold">@post.Username</span>
+                                    <span><strong>@post.Likes </strong> likes</span>
                                 </div>
-                                <p class="mt-1">@item.Content</p>
+                                <p class="mt-1">@post.Content</p>
                                 <div class="flex mt-2">
                                     <button class="text-sm font-semibold"
-                                            @onclick="@(() => LikeAsync(item.PostId))"
+                                            @onclick="@(() => LikeAsync(post.PostId))"
                                             >Like</button>
                                     <button class="ml-2 text-sm font-semibold">Share</button>
                                 </div>
@@ -209,8 +209,12 @@
     {
         foreach (var post in posts.Where(post => post.PostId == postId))
         {
-            post.Likes += 1;
-            await UserService.AddedLike(post.PostId, post.Username, _username);
+            var isLiked = await UserService.AddedLike(post.PostId, post.Username, _username);
+
+            if (isLiked)
+            {
+                post.Likes += 1;
+            }
         }
         StateHasChanged();
     }

@@ -93,7 +93,7 @@
                                     <p class="mt-1">@post.Content</p>
                                     <div class="flex mt-2">
 
-                                        @if (_user.LikedPosts.Any(p => p.PostId == post.PostId))
+                                        @if (_user.LikedPosts != null && _user.LikedPosts.Any(p => p.PostId == post.PostId))
                                         {
                                             <button class="text-sm font-semibold"
                                                     @onclick="@(() => LikeAsync(post.PostId))">
@@ -135,7 +135,7 @@
                                 </div>
                                 <p class="mt-1">@post.Content</p>
                                 <div class="flex mt-2">
-                                    @if (_user.LikedPosts.Any(p => p.PostId == post.PostId))
+                                    @if (_user.LikedPosts != null && _user.LikedPosts.Any(p => p.PostId == post.PostId))
                                     {
                                         <button class="text-sm font-semibold"
                                                 @onclick="@(() => LikeAsync(post.PostId))">
@@ -192,8 +192,11 @@
             string baseUrl = navigationManager.BaseUri;
 
             _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
+            
             _hubConnection = new HubConnectionBuilder().WithUrl(_hubUrl).Build();
+            
             _hubConnection.On<string, string, string>("BroadcastMessage", BroadcastMessage);
+            _hubConnection.On<string, bool>("BroadcastLike", BroadcastLike);
             await _hubConnection.StartAsync();
         }
         catch (Exception e)
@@ -206,6 +209,23 @@
     private async Task BroadcastMessage(string name, string message, string postId)
     {
         posts.Insert(0, new PostDTO {Username = name, Content = message, PostId = new Guid(postId)});
+        StateHasChanged();
+    }
+    
+    private async Task BroadcastLike(string postId, bool isLike)
+    {
+        var post = posts.Find(p => p.PostId == new Guid(postId));
+        if (post != null)
+        {
+            if (isLike)
+            {
+                post.Likes += 1;
+            }
+            else
+            {
+                post.Likes -= 1;
+            }
+        }
         StateHasChanged();
     }
 
@@ -236,11 +256,11 @@
         foreach (var post in posts.Where(post => post.PostId == postId))
         {
             var isLiked = await UserService.AddedLike(post.PostId, post.Username, _username);
-
+            await _hubConnection.SendAsync("BroadcastLike", postId, isLiked);
+            await Task.Run(() => _user = UserService.GetUserByUsername(_username));
             if (!isLiked) continue;
-            post.Likes += 1;
-            StateHasChanged();
         }
+        StateHasChanged();
     }
 
     private async Task LoginUser()

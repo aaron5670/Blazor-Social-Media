@@ -13,9 +13,9 @@ namespace SocialMediaApplication
             await Clients.All.SendAsync("BroadcastMessage", username, message, postId);
         }
 
-        public async Task BroadcastLike(string username, string message, string postId)
+        public async Task BroadcastLike(string postId, bool isLike)
         {
-            await Clients.All.SendAsync("BroadcastLike", username, message, postId);
+            await Clients.All.SendAsync("BroadcastLike", postId, isLike);
         }
 
         public override Task OnConnectedAsync()

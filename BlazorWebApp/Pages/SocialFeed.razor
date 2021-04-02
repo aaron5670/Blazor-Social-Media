@@ -86,8 +86,9 @@
                                 <img src="https://icotar.com/initials/@post.Username"
                                      class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
                                 <div class="flex flex-col flex-grow ml-4">
-                                    <div class="flex">
+                                    <div class="flex justify-content-between">
                                         <span class="font-semibold">@post.Username</span>
+                                        <span><strong>@post.Likes </strong> likes</span>
                                     </div>
                                     <p class="mt-1">@post.Content</p>
                                     <div class="flex mt-2">
@@ -192,7 +193,7 @@
 
             _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
             _hubConnection = new HubConnectionBuilder().WithUrl(_hubUrl).Build();
-            _hubConnection.On<string, string, string>("Broadcast", BroadcastMessage);
+            _hubConnection.On<string, string, string>("BroadcastMessage", BroadcastMessage);
             await _hubConnection.StartAsync();
         }
         catch (Exception e)
@@ -225,7 +226,7 @@
         if (_isChatting && !string.IsNullOrWhiteSpace(message))
         {
             var post = await UserService.AddPost(_username, message);
-            await _hubConnection.SendAsync("Broadcast", _username, message, post.PostId.ToString());
+            await _hubConnection.SendAsync("BroadcastMessage", _username, message, post.PostId.ToString());
             _newMessage = string.Empty;
         }
     }

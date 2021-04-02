@@ -112,7 +112,20 @@ namespace SocialMediaApplication.Data
             if (user.LikedPosts == null || user.LikedPosts.Count == 0)
                 user.LikedPosts = new List<LikedPost>();
 
-            if (user.LikedPosts != null && user.LikedPosts.Any(p => p.PostId == postId)) return false;
+            if (user.LikedPosts != null && user.LikedPosts.Any(p => p.PostId == postId))
+            {
+                foreach (var userLikedPost in user.LikedPosts)
+                {
+                    if (userLikedPost.PostId == postId)
+                    {
+                        user.LikedPosts.Remove(userLikedPost);
+                    }
+                }
+                
+                if (post != null) post.Likes -= 1;
+                userRepository.Commit();
+                return false;
+            }
 
             user.LikedPosts.Add(new LikedPost {PostId = postId, Timestamp = DateTime.Now});
             userRepository.Commit();

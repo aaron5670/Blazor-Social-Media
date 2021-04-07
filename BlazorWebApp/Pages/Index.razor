@@ -1,7 +1,313 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager;
+@using Microsoft.AspNetCore.SignalR.Client;
+@using SocialMediaApplication.Data
+@using Entities
+@using SocialMediaApplication.DTO
+@using System.Globalization
+@inject UserService UserService
 
-<h1>Hello, Azure World!</h1>
+@if (!_isChatting)
+{
+    <header class="bg-gray-900 pattern h-screen">
+        <div class="container px-5 mx-auto custom-container">
+            <nav class="flex flex-col py-2 sm:flex-row sm:justify-between sm:items-center">
+                <div>
+                    <span class="text-2xl font-semibold text-white hover:text-gray-300">
+                        BlazorMedia
+                    </span>
+                </div>
+            </nav>
 
-Welcome to your new app.
+            <div class="flex flex-col items-center py-6 md:h-128 md:flex-row">
+                <div class="md:w-1/2">
+                    <h2 class="text-4xl font-semibold text-gray-100">BlazorMedia</h2>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+                    <h3 class="text-2xl font-semibold text-gray-100">
+                        Hi <span class="text-indigo-400">gast</span>
+                    </h3>
+
+                    <p class="mt-3 text-gray-100">
+                        Meld je aan om deel te nemen aan de realtime feed! 😀
+                    </p>
+                </div>
+
+                <div class="flex mt-8 md:w-1/2 md:justify-end md:mt-0">
+                    <div class="max-w-sm bg-white rounded-lg dark:bg-gray-800">
+                        <div class="p-5 text-center">
+                            <h2 class="text-2xl font-semibold text-gray-700 dark:text-white fo">Aanmelden</h2>
+
+                            <div class="mt-4">
+                                <input class="block w-full px-4 py-2 text-gray-700 placeholder-gray-500 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"
+                                       type="text"
+                                       @bind="@_username"
+                                       name="_username"
+                                       id="_username"
+                                       placeholder="Gebruikersnaam"
+                                       aria-label="Gebruikersnaam">
+                                @if (_message != null)
+                                {
+                                    <div class="invalid-feedback">@_message</div>
+                                    <small id="emailHelp" class="form-text text-muted">@_message</small>
+                                }
+                            </div>
+
+                            <div class="flex items-center justify-between mt-4">
+                                <button class="px-4 py-2 font-semibold text-white transition-colors duration-200 transform bg-gray-900 rounded-md hover:bg-gray-800 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-800 dark:focus:bg-gray-700"
+                                        @onclick="@Chat">
+                                    Aanmelden
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+}
+
+
+@if (_isChatting)
+{
+    <div class="flex justify-center w-100 h-screen px-4 text-gray-700">
+        <div class="flex w-full">
+            <div class="flex flex-col w-64 py-4 pr-3">
+                @if (_isChatting)
+                {
+                    <a class="flex px-3 py-2 mt-2 mt-auto text-lg rounded-sm font-medium hover:bg-gray-200" href="#">
+                        <img src="https://icotar.com/initials/@_username"
+                             class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
+                        <div class="flex flex-col ml-2">
+                            <span class="mt-1 text-sm leading-none">Je bent ingelogd als:</span>
+                            <span class="mt-1 text-xs font-weight-bold leading-none">@_username</span>
+                        </div>
+                    </a>
+                    <div class="px-3 py-2 mt-2 text-lg font-medium rounded-sm hover:bg-gray-300 cursor-pointer"
+                         @onclick="@DisconnectAsync">
+                        Uitloggen
+                    </div>
+                }
+            </div>
+            <div class="flex flex-col flex-grow border-l border-r border-gray-300">
+                <div class="flex justify-between flex-shrink-0 px-8 py-4 border-b border-gray-300">
+                    <h1 class="text-xl font-semibold">Bekijk de realtime Blazor tijdlijn!</h1>
+                </div>
+                <div class="flex-grow h-0 overflow-auto">
+                    @if (_isChatting)
+                    {
+                        <div class="flex w-full p-8 border-b-4 border-gray-300">
+                            <img src="https://icotar.com/initials/@_username"
+                                 class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
+                            <div class="flex flex-col flex-grow ml-4">
+                                <textarea 
+                                @bind="@_newMessage"
+                                class="p-3 bg-transparent border border-gray-500 rounded-sm" 
+                                name="" 
+                                id=""  
+                                rows="3" 
+                                placeholder="What's happening?"/>
+                                <div class="flex justify-between mt-2">
+                                    <button
+                                        @onclick="@(() => SendAsync(_newMessage))"
+                                         class="flex items-center h-8 px-3 text-xs rounded-sm bg-gray-300 hover:bg-gray-400">
+                                        Plaats bericht
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        @if (_posts?.Count > 0)
+                        {
+                            @foreach (var post in _posts)
+                            {
+                                <div class="flex w-full p-8 border-b border-gray-300">
+                                    <img src="https://icotar.com/initials/@post.Username"
+                                         class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
+                                    <div class="flex flex-col flex-grow ml-4">
+                                        <div class="flex justify-content-between">
+                                            <span class="font-semibold">@post.Username</span>
+                                            <span><strong>@post.Likes </strong> likes</span>
+                                        </div>
+                                        <p class="mt-1">@post.Content</p>
+                                        <div class="flex mt-2">
+                                            <span class="text-sm font-semibold pr-3">@post.Timestamp.ToString("f", _ci)</span>
+                                            @if (_user.LikedPosts != null && _user.LikedPosts.Any(p => p.PostId == post.PostId))
+                                            {
+                                                <button class="text-sm font-semibold"
+                                                        @onclick="@(() => LikeAsync(post.PostId))">
+                                                    Unlike
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="text-sm font-semibold"
+                                                        @onclick="@(() => LikeAsync(post.PostId))">
+                                                    Like
+                                                </button>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+            <div class="flex flex-col flex-shrink-0 w-1/4 py-4 pl-4">
+                @if (_posts?.Count > 0 && _isChatting)
+                {
+                    <h3 class="mt-6 font-semibold">Trending</h3>
+                    @foreach (var post in _posts.OrderByDescending(post => post.Likes).Take(MaxTrending))
+                    {
+                        <div class="flex w-full p-8 border-b border-gray-300">
+                            <img src="https://icotar.com/initials/@post.Username"
+                                 class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
+                            <div class="flex flex-col flex-grow ml-4">
+                                <div class="flex justify-content-between">
+                                    <span class="font-semibold">@post.Username</span>
+                                    <span><strong>@post.Likes </strong> likes</span>
+                                </div>
+                                <p class="mt-1">@post.Content</p>
+                                <div class="flex mt-2">
+                                    @if (_user.LikedPosts != null && _user.LikedPosts.Any(p => p.PostId == post.PostId))
+                                    {
+                                        <button class="text-sm font-semibold"
+                                                @onclick="@(() => LikeAsync(post.PostId))">
+                                            Unlike
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="text-sm font-semibold"
+                                                @onclick="@(() => LikeAsync(post.PostId))">
+                                            Like
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}
+@code {
+    private bool _isChatting;
+    private string _username = string.Empty;
+    private string _message;
+    private string _newMessage;
+    private string _hubUrl;
+    private HubConnection _hubConnection;
+    readonly CultureInfo _ci = new("nl-NL");
+
+        private const int MaxTrending = 5;
+
+    ICollection<User> _users;
+    List<PostDTO> _posts;
+    User _user;
+
+    string ErrorText { get; set; } = string.Empty;
+
+    private async Task Chat()
+    {
+        if (string.IsNullOrWhiteSpace(_username))
+        {
+            _message = "Voer een gebruikersnaam in";
+            return;
+        }
+
+        try
+        {
+            await LoginUser();
+            _isChatting = true;
+
+            var baseUrl = NavigationManager.BaseUri;
+
+            _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
+
+            _hubConnection = new HubConnectionBuilder().WithUrl(_hubUrl).Build();
+
+            _hubConnection.On<string, string, string, DateTime>("BroadcastMessage", BroadcastMessage);
+            _hubConnection.On<string, bool>("BroadcastLike", BroadcastLike);
+            await _hubConnection.StartAsync();
+        }
+        catch (Exception e)
+        {
+            _message = $"ERROR: Failed to start chat client: {e.Message}";
+            _isChatting = false;
+        }
+    }
+
+    private void BroadcastMessage(string name, string message, string postId, DateTime timeStampMessage)
+    {
+        _posts.Insert(0, new PostDTO {Username = name, Content = message, PostId = new Guid(postId), Timestamp = timeStampMessage});
+        StateHasChanged();
+    }
+
+    private void BroadcastLike(string postId, bool isLike)
+    {
+        var post = _posts.Find(p => p.PostId == new Guid(postId));
+        if (post != null)
+        {
+            if (isLike)
+            {
+                post.Likes += 1;
+            }
+            else
+            {
+                post.Likes -= 1;
+            }
+        }
+        StateHasChanged();
+    }
+
+    private async Task DisconnectAsync()
+    {
+        if (_isChatting)
+        {
+            await _hubConnection.StopAsync();
+            await _hubConnection.DisposeAsync();
+
+            _hubConnection = null;
+            _isChatting = false;
+        }
+    }
+
+    private async Task SendAsync(string message)
+    {
+        if (_isChatting && !string.IsNullOrWhiteSpace(message))
+        {
+            var post = await UserService.AddPost(_username, message);
+            await _hubConnection.SendAsync("BroadcastMessage", _username, message, post.PostId.ToString(), post.Timestamp);
+            _newMessage = string.Empty;
+        }
+    }
+
+    private async Task LikeAsync(Guid postId)
+    {
+        foreach (var post in _posts.Where(post => post.PostId == postId))
+        {
+            var isLiked = await UserService.HandlePostLike(post.PostId, post.Username, _username);
+            await _hubConnection.SendAsync("BroadcastLike", postId, isLiked);
+            await Task.Run(() => _user = UserService.GetUserByUsername(_username));
+            if (!isLiked) continue;
+        }
+        StateHasChanged();
+    }
+
+    private async Task LoginUser()
+    {
+        ErrorText = string.Empty;
+        await UserService.LoginUser(_username);
+        await Task.Run(() => _user = UserService.GetUserByUsername(_username));
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(() => _posts = UserService.GetAllPosts());
+        Console.WriteLine(_posts);
+    }
+
+}
+

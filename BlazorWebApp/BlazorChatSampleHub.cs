@@ -8,9 +8,9 @@ namespace SocialMediaApplication
     {
         public const string HubUrl = "/chat";
 
-        public async Task BroadcastMessage(string username, string message, string postId)
+        public async Task BroadcastMessage(string username, string message, string postId, DateTime timeStamp)
         {
-            await Clients.All.SendAsync("BroadcastMessage", username, message, postId);
+            await Clients.All.SendAsync("BroadcastMessage", username, message, postId, timeStamp);
         }
 
         public async Task BroadcastLike(string postId, bool isLike)

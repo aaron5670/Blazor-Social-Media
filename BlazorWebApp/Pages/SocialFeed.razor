@@ -13,7 +13,8 @@
             @if (_isChatting)
             {
                 <a class="flex px-3 py-2 mt-2 mt-auto text-lg rounded-sm font-medium hover:bg-gray-200" href="#">
-                    <span class="flex-shrink-0 w-10 h-10 bg-gray-400 rounded-full"></span>
+                    <img src="https://icotar.com/initials/@_username"
+                                                 class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
                     <div class="flex flex-col ml-2">
                         <span class="mt-1 text-sm leading-none">Logged in as:</span>
                         <span class="mt-1 text-xs font-weight-bold leading-none">@_username</span>
@@ -33,7 +34,7 @@
                 @if (!_isChatting)
                 {
                     <div class="flex justify-between align-items-center flex-shrink-0 px-8 py-4 border-b border-gray-300">
-                        <h1 class="text-xl font-semibold">Fill in username</h1>
+                        <h1 class="text-xl font-semibold">Voer hier je gebruikersnaam in!</h1>
                         <input
                             type="text"
                             @bind="@_username"
@@ -45,7 +46,7 @@
                             <button
                                 @onclick="@Chat"
                                  class="flex items-center h-8 px-3 text-xs rounded-sm bg-gray-300 hover:bg-gray-400">
-                                Have fun posting!
+                                Begin met posten!
                             </button>
                         </div>
                         @if (_message != null)
@@ -92,14 +93,13 @@
                                     </div>
                                     <p class="mt-1">@post.Content</p>
                                     <div class="flex mt-2">
-
+                                        <span class="text-sm font-semibold pr-3">@post.Timestamp</span>
                                         @if (_user.LikedPosts != null && _user.LikedPosts.Any(p => p.PostId == post.PostId))
                                         {
                                             <button class="text-sm font-semibold"
                                                     @onclick="@(() => LikeAsync(post.PostId))">
                                                 Unlike
                                             </button>
-                                            <button class="ml-2 text-sm font-semibold">Share</button>
                                         }
                                         else
                                         {
@@ -107,7 +107,6 @@
                                                     @onclick="@(() => LikeAsync(post.PostId))">
                                                 Like
                                             </button>
-                                            <button class="ml-2 text-sm font-semibold">Share</button>
                                         }
 
                                     </div>
@@ -119,44 +118,40 @@
             </div>
         </div>
         <div class="flex flex-col flex-shrink-0 w-1/4 py-4 pl-4">
-            <input class="flex items-center h-8 px-2 border border-gray-500 rounded-sm" type="search" Placeholder="Search…">
-            <div>
+            @if (_posts?.Count > 0 && _isChatting)
+            {
                 <h3 class="mt-6 font-semibold">Trending</h3>
-                @if (_posts?.Count > 0 && _isChatting)
+                @foreach (var post in _posts.OrderByDescending(post => post.Likes).Take(MaxTrending))
                 {
-                    @foreach (var post in _posts.OrderByDescending(post => post.Likes))
-                    {
-                        <div class="flex w-full p-8 border-b border-gray-300">
-                            <span class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>
-                            <div class="flex flex-col flex-grow ml-4">
-                                <div class="flex justify-content-between">
-                                    <span class="font-semibold">@post.Username</span>
-                                    <span><strong>@post.Likes </strong> likes</span>
-                                </div>
-                                <p class="mt-1">@post.Content</p>
-                                <div class="flex mt-2">
-                                    @if (_user.LikedPosts != null && _user.LikedPosts.Any(p => p.PostId == post.PostId))
-                                    {
-                                        <button class="text-sm font-semibold"
-                                                @onclick="@(() => LikeAsync(post.PostId))">
-                                            Unlike
-                                        </button>
-                                        <button class="ml-2 text-sm font-semibold">Share</button>
-                                    }
-                                    else
-                                    {
-                                        <button class="text-sm font-semibold"
-                                                @onclick="@(() => LikeAsync(post.PostId))">
-                                            Like
-                                        </button>
-                                        <button class="ml-2 text-sm font-semibold">Share</button>
-                                    }
-                                </div>
+                    <div class="flex w-full p-8 border-b border-gray-300">
+                        <img src="https://icotar.com/initials/@post.Username"
+                                                     class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
+                        <div class="flex flex-col flex-grow ml-4">
+                            <div class="flex justify-content-between">
+                                <span class="font-semibold">@post.Username</span>
+                                <span><strong>@post.Likes </strong> likes</span>
+                            </div>
+                            <p class="mt-1">@post.Content</p>
+                            <div class="flex mt-2">
+                                @if (_user.LikedPosts != null && _user.LikedPosts.Any(p => p.PostId == post.PostId))
+                                {
+                                    <button class="text-sm font-semibold"
+                                            @onclick="@(() => LikeAsync(post.PostId))">
+                                        Unlike
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="text-sm font-semibold"
+                                            @onclick="@(() => LikeAsync(post.PostId))">
+                                        Like
+                                    </button>
+                                }
                             </div>
                         </div>
-                    }
+                    </div>
                 }
-            </div>
+            }
         </div>
     </div>
 </div>
@@ -167,6 +162,7 @@
     private string _message;
     private string _newMessage;
     private string _hubUrl;
+        private const int MaxTrending = 5;
     private HubConnection _hubConnection;
 
     ICollection<User> _users;
@@ -194,7 +190,7 @@
 
             _hubConnection = new HubConnectionBuilder().WithUrl(_hubUrl).Build();
 
-            _hubConnection.On<string, string, string>("BroadcastMessage", BroadcastMessage);
+            _hubConnection.On<string, string, string, DateTime>("BroadcastMessage", BroadcastMessage);
             _hubConnection.On<string, bool>("BroadcastLike", BroadcastLike);
             await _hubConnection.StartAsync();
         }
@@ -205,9 +201,9 @@
         }
     }
 
-    private void BroadcastMessage(string name, string message, string postId)
+    private void BroadcastMessage(string name, string message, string postId, DateTime timeStampMessage)
     {
-        _posts.Insert(0, new PostDTO {Username = name, Content = message, PostId = new Guid(postId)});
+        _posts.Insert(0, new PostDTO {Username = name, Content = message, PostId = new Guid(postId), Timestamp = timeStampMessage});
         StateHasChanged();
     }
 
@@ -245,7 +241,7 @@
         if (_isChatting && !string.IsNullOrWhiteSpace(message))
         {
             var post = await UserService.AddPost(_username, message);
-            await _hubConnection.SendAsync("BroadcastMessage", _username, message, post.PostId.ToString());
+            await _hubConnection.SendAsync("BroadcastMessage", _username, message, post.PostId.ToString(), post.Timestamp);
             _newMessage = string.Empty;
         }
     }

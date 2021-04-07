@@ -89,32 +89,33 @@
                 }
             </div>
             <div class="flex flex-col flex-grow border-l border-r border-gray-300">
-                <div class="flex justify-between flex-shrink-0 px-8 py-4 border-b border-gray-300">
-                    <h1 class="text-xl font-semibold">Bekijk de realtime Blazor tijdlijn!</h1>
-                </div>
                 <div class="flex-grow h-0 overflow-auto">
                     @if (_isChatting)
                     {
-                        <div class="flex w-full p-8 border-b-4 border-gray-300">
-                            <img src="https://icotar.com/initials/@_username"
-                                 class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
-                            <div class="flex flex-col flex-grow ml-4">
-                                <textarea 
-                                @bind="@_newMessage"
-                                class="p-3 bg-transparent border border-gray-500 rounded-sm" 
-                                name="" 
-                                id=""  
-                                rows="3" 
-                                placeholder="What's happening?"/>
-                                <div class="flex justify-between mt-2">
-                                    <button
-                                        @onclick="@(() => SendAsync(_newMessage))"
-                                         class="flex items-center h-8 px-3 text-xs rounded-sm bg-gray-300 hover:bg-gray-400">
-                                        Plaats bericht
-                                    </button>
-                                </div>
+                        
+                        <div class="max-w-2xl mt-5 px-8 py-4 mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-800">
+                            <div class="flex justify-center -mt-16 md:justify-end">
+                                <img class="object-cover w-20 h-20 border-2 border-indigo-500 rounded-full dark:border-indigo-400"
+                                     alt="Testimonial avatar"
+                                     src="https://icotar.com/initials/@_username">
+                            </div>
+
+                            <h2 class="mt-2 text-2xl font-semibold text-gray-800 dark:text-white md:mt-0 md:text-3xl">BlazorMedia</h2>
+                            
+                            <textarea 
+                            @bind="@_newMessage"
+                            class="block w-full h-20 mt-3 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"                            name="" 
+                            rows="2" 
+                            placeholder="What's happening?"/>
+                            <div class="flex justify-end mt-2">
+                                <button
+                                    @onclick="@(() => SendAsync(_newMessage))"
+                                    class="px-4 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-indigo-700 rounded-md hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600">
+                                    Plaats bericht
+                                </button>
                             </div>
                         </div>
+                        
                         @if (_posts?.Count > 0)
                         {
                             @foreach (var post in _posts)

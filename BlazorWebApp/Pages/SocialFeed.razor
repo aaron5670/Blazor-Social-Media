@@ -4,6 +4,7 @@
 @using SocialMediaApplication.Data
 @using Entities
 @using SocialMediaApplication.DTO
+@using System.Globalization
 @inject UserService UserService
 
 <div class="flex justify-center w-100 h-screen px-4 text-gray-700">
@@ -14,7 +15,7 @@
             {
                 <a class="flex px-3 py-2 mt-2 mt-auto text-lg rounded-sm font-medium hover:bg-gray-200" href="#">
                     <img src="https://icotar.com/initials/@_username"
-                                                 class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
+                         class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
                     <div class="flex flex-col ml-2">
                         <span class="mt-1 text-sm leading-none">Logged in as:</span>
                         <span class="mt-1 text-xs font-weight-bold leading-none">@_username</span>
@@ -93,7 +94,7 @@
                                     </div>
                                     <p class="mt-1">@post.Content</p>
                                     <div class="flex mt-2">
-                                        <span class="text-sm font-semibold pr-3">@post.Timestamp</span>
+                                        <span class="text-sm font-semibold pr-3">@post.Timestamp.ToString("f", _ci)</span>
                                         @if (_user.LikedPosts != null && _user.LikedPosts.Any(p => p.PostId == post.PostId))
                                         {
                                             <button class="text-sm font-semibold"
@@ -125,7 +126,7 @@
                 {
                     <div class="flex w-full p-8 border-b border-gray-300">
                         <img src="https://icotar.com/initials/@post.Username"
-                                                     class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
+                             class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"/>
                         <div class="flex flex-col flex-grow ml-4">
                             <div class="flex justify-content-between">
                                 <span class="font-semibold">@post.Username</span>
@@ -162,8 +163,10 @@
     private string _message;
     private string _newMessage;
     private string _hubUrl;
-        private const int MaxTrending = 5;
     private HubConnection _hubConnection;
+    readonly CultureInfo _ci = new("nl-NL");
+
+        private const int MaxTrending = 5;
 
     ICollection<User> _users;
     List<PostDTO> _posts;

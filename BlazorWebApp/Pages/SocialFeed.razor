@@ -124,7 +124,7 @@
                 <h3 class="mt-6 font-semibold">Trending</h3>
                 @if (_posts?.Count > 0 && _isChatting)
                 {
-                    @foreach (var post in _posts)
+                    @foreach (var post in _posts.OrderByDescending(post => post.Likes))
                     {
                         <div class="flex w-full p-8 border-b border-gray-300">
                             <span class="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>

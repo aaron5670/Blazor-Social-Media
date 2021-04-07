@@ -2,10 +2,8 @@
 using CosmosDbSQLAPI;
 using Entities;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using SocialMediaApplication.DTO;
 
 namespace SocialMediaApplication.Data
@@ -52,36 +50,16 @@ namespace SocialMediaApplication.Data
 
             return newPost;
         }
-
-        public void DeleteUser(string username)
-        {
-            // Todo async and  Error code!  
-            using var userRepository = new UserRepository(new CommunityDbContext());
-            var user = userRepository.Find(u => u.Name == username).Single();
-            userRepository.Delete(user);
-            userRepository.Commit();
-        }
-
+        
         public User GetUserByUsername(string username)
         {
-            // Todo async and  Error code!  
             using var userRepository = new UserRepository(new CommunityDbContext());
             var user = userRepository.Find(u => u.Name == username).Single();
             return user;
         }
 
-        public ICollection<User> GetUsers()
-        {
-            // Todo async and Error code!  
-            using var userRepository = new UserRepository(new CommunityDbContext());
-            userRepository.Include(nameof(User.Posts));
-            Debug.WriteLine(userRepository.GetAll());
-            return userRepository.GetAll();
-        }
-
         public List<PostDTO> GetAllPosts()
         {
-            // Todo async and Error code!  
             using var userRepository = new UserRepository(new CommunityDbContext());
             var posts = new List<PostDTO>();
             var users = userRepository.GetAll();

@@ -20,7 +20,6 @@ namespace SocialMediaApplication
             services.AddRazorPages();
             services.AddServerSideBlazor();
             
-            services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<UserService>();
 
             // Pass settings to other components
